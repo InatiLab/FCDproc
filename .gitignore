@@ -1,0 +1,21 @@
+fcdproc_wf
+fcdproc/data
+fcdproc/derivatives
+
+#python and Ipython Notebooks
+__pycache__
+.ipynb_checkpoints
+.spyproject
+
+#Mac junk 
+.DS_Store
+.pyc
+
+#Emacs
+*~
+
+#VS_code
+.vscode
+
+
+
