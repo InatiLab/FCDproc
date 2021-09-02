@@ -66,20 +66,23 @@ def create_FCD_pipeline():
     #controls = config.execution.controls
     controls =['01', '02', '03', '05', '06',  '07', '09',  '11', '12', '13',  '14',  '15', '16', '17', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32','34','35']
     #pt_positive = config.execution.patient_positive
-    pt_positive = ['50', '52', '55', '57', '58', '61', '62', '63', '65']
+    pt_positive = ['50', '52', '55', '57', '58', '59', '61', '62', '63', '65']
     #pt_negative = config.execution.patient_negative
-    pt_negative = ['51','53','56','60']
-    
+    pt_negative = ['51','53','56','60','66', '67', '68', '69', '70']   
+   
     subjects = controls+pt_positive+pt_negative
-    patients = pt_positive+pt_negative
+   
     
+    anat_dir = pe.Node(DataFinder(root_paths=fcdproc_dir, max_depth=0),name='anat_dir', run_without_submitting=True)
     
-    #running individual preprocessing for all the subjects
-    analysis_mode = 'model'  #'preprocess' 
+    #defining analysis mode: preprocess, model, detect
+    analysis_mode = 'detect'
     
     if analysis_mode == 'preprocess':
         for subject_id in subjects:
+        
             single_subject_wf = init_single_subject_wf(subject_id)
+            
             
             for node in single_subject_wf._get_all_nodes():
                 node.config = deepcopy(single_subject_wf.config)
@@ -93,14 +96,14 @@ def create_FCD_pipeline():
     if analysis_mode == 'model':
         
         model_exist = os.path.isdir(fcdproc_dir+'/model')
-
+        
     
         anat_dir = pe.Node(DataFinder(root_paths=fcdproc_dir, max_depth=0),name='anat_dir', run_without_submitting=True)
     
         if not model_exist: 
 
             # training pca and gauss model            
-            pca_gauss_modeling = init_pca_gauss_detector_model_wf(subject_list=controls, action='train')
+            pca_gauss_modeling = init_pca_gauss_detector_model_wf(controls=controls, pt_pos=[], pt_neg=[], action='train')
         
             fcdproc_wf.connect(anat_dir, ('out_paths', convert_list_2_str), pca_gauss_modeling, 'inputnode.base_directory')
                                
@@ -108,29 +111,33 @@ def create_FCD_pipeline():
             for node in pca_gauss_modeling._get_all_nodes():
                 node.config = deepcopy(pca_gauss_modeling.config)
 
-        #if model_exist:
+        
+        if model_exist:
             
+        
             #applying the learned model to patient data        
-          #  pca_gauss_apply = init_pca_gauss_detector_model_wf(subject_list=patients, action='apply')
+            pca_gauss_apply = init_pca_gauss_detector_model_wf(controls=[], pt_pos=pt_positive, pt_neg=[], action='apply')
         
-          #  fcdproc_wf.connect(anat_dir, ('out_paths', convert_list_2_str), pca_gauss_apply, 'inputnode.base_directory')
+            fcdproc_wf.connect(anat_dir, ('out_paths', convert_list_2_str), pca_gauss_apply, 'inputnode.base_directory')
         
-          #  for node in pca_gauss_apply._get_all_nodes():
-          #      node.config = deepcopy(pca_gauss_apply.config)
-
-                
-        fcd_detector_model = init_pca_gauss_detector_model_wf(subject_list=subjects, action='detect')
-            
-        fcdproc_wf.connect(anat_dir, ('out_paths', convert_list_2_str), fcd_detector_model, 'inputnode.base_directory')   
-            
-            
+            for node in pca_gauss_apply._get_all_nodes():
+                node.config = deepcopy(pca_gauss_apply.config)
 
             
+            #training for fcd_detector model   
+            fcd_detector_model = init_pca_gauss_detector_model_wf(controls=controls, pt_pos=pt_positive, pt_neg=[], action='train_fcd_detector')
+            
+            fcdproc_wf.connect(anat_dir, ('out_paths', convert_list_2_str), fcd_detector_model, 'inputnode.base_directory')   
+            
+                    
             
     if analysis_mode == 'detect':
         
-        for subj in pt_negative:
-            print('performing fcd_detectiion on subject ')
+        anat_direcotry = anat_dir.clone(name='anatomical_dir')
+        
+        detector_apply = apply_fcd_detector_wf(subject=pt_negative)
+            
+        fcdproc_wf.connect(anat_direcotry, ('out_paths', convert_list_2_str), detector_apply, 'inputnode.base_directory')   
         
         
         
@@ -179,7 +186,7 @@ def init_single_subject_wf(subject_id):
     from fmriprep.workflows.bold.resampling import init_bold_surf_wf
     
     name = "single_subject_%s_wf" % subject_id
-    bids_dir = '/Users/abdollahis2/Desktop/fcdproc/fcdproc/data/'
+    bids_dir = '/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc/data/'
     #bids_dir = config.excution.bids_dir
     helper_dir = os.path.join(bids_dir, '__files/')
     
@@ -196,9 +203,9 @@ def init_single_subject_wf(subject_id):
     
     workflow = pe.Workflow(name=name)
        
-    fcdproc_dir = '/Users/abdollahis2/Desktop/fcdproc/fcdproc/derivatives/fcdproc'
+    fcdproc_dir = '/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc/derivatives/fcdproc'
     #fcdproc_dir = str(config.execution.fcdproc_dir)
-    #workflow.base_dir = fcdproc_dir
+    workflow.base_dir = fcdproc_dir
     
     
     inputnode = pe.Node(niu.IdentityInterface(fields=['subjects_dir']), name='inputnode')
@@ -325,7 +332,7 @@ def init_single_subject_wf(subject_id):
     scale_feat = pe.Node(FCD_python.FeatGlobalScale(), name='scale_feat')
     
     workflow.connect(fs_suma, 'outputnode.lh_selctx', scale_feat, 'lh_selctx')
-    workflow.connect(fs_suma, 'outputnode.lh_selctx', scale_feat, 'rh_selctx')
+    workflow.connect(fs_suma, 'outputnode.rh_selctx', scale_feat, 'rh_selctx')
     workflow.connect(concat_feat, 'lh_data', scale_feat, 'lh_features')
     workflow.connect(concat_feat, 'rh_data', scale_feat, 'rh_features')
     
@@ -369,10 +376,10 @@ def init_single_subject_wf(subject_id):
         workflow.connect(mask_vol2surf_lh, 'out_file', datasink, 'data.dset.@lh_fcd_mask')
         workflow.connect(mask_vol2surf_rh, 'out_file', datasink, 'data.dset.@rh_fcd_mask')
     
-    workflow.write_graph(graph2use='orig', dotfilename=f'/Users/abdollahis2/Desktop/fcdproc/fcdproc_wf/single_subject_{subject_id}_wf/graph_detailed.dot')
+    workflow.write_graph(graph2use='orig', dotfilename=f'/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc_wf/single_subject_{subject_id}_wf/graph_detailed.dot')
     return workflow
 
-def init_pca_gauss_detector_model_wf(subject_list, action):
+def init_pca_gauss_detector_model_wf(controls, pt_pos, pt_neg, action):
     
     '''
     Stage performing the PCA reduction & Gaussiniaztion model
@@ -425,12 +432,15 @@ def init_pca_gauss_detector_model_wf(subject_list, action):
 
     import nipype.pipeline.engine as pe
     import nipype.interfaces.utility as niu
-    from fcdproc.utils.misc import flaten_list
+    from fcdproc.utils.misc import flaten_list, seperate_subj_features
     from nipype.interfaces.io import SelectFiles
-    from fcdproc.interfaces.FCD_python import TrainPCA, ApplyPCA, TrainGauss, ApplyGauss
+    import fcdproc.interfaces.FCD_python  as FCD_python 
     from fcdproc.interfaces.FCD_preproc import SurfSmooth
 
+
+    subjects = controls+pt_pos+pt_neg
     pipeline = pe.Workflow(name="PCA_Gauss_modeling")
+
     
     inputnode = pe.Node(niu.IdentityInterface(fields=['base_directory']), name='inputnode')
     
@@ -442,15 +452,15 @@ def init_pca_gauss_detector_model_wf(subject_list, action):
     template = {'feature': '{subject_id}/data/dset/*features.globalSTD.1D.dset', 'selctx' : '{subject_id}/data/dset/*sel_ctx.1D.dset'}
     select = pe.MapNode(SelectFiles(template, sort_filelist=True),
                     iterfield=['subject_id'], name='select_files', run_without_submitting=True)
-    select.inputs.subject_id = subject_list
+    select.inputs.subject_id = subjects
     pipeline.connect(inputnode, 'base_directory', select, 'base_directory')
 
-    ApplyPCA = pe.Node(ApplyPCA(), name='pca_apply')
-    ApplyGauss = pe.Node(ApplyGauss(), name='gauss_apply')
+    ApplyPCA = pe.Node(FCD_python.ApplyPCA(), name='pca_apply')
+    ApplyGauss = pe.Node(FCD_python.ApplyGauss(), name='gauss_apply')
     
     if action == 'train':        
            
-       TrainPCA = pe.Node(TrainPCA(), name='pca_train')
+       TrainPCA = pe.Node(FCD_python.TrainPCA(), name='pca_train')
 
        pipeline.connect(select, 'feature', TrainPCA, 'features')
        pipeline.connect(select, 'selctx', TrainPCA, 'selctx')            
@@ -461,7 +471,7 @@ def init_pca_gauss_detector_model_wf(subject_list, action):
        pipeline.connect(select, 'selctx', ApplyPCA, 'selctx')
             
     
-       TrainGauss = pe.Node(TrainGauss(), name='gauss_train')
+       TrainGauss = pe.Node(FCD_python.TrainGauss(), name='gauss_train')
             
        pipeline.connect(ApplyPCA, 'data', TrainGauss, 'features_pca')
        pipeline.connect(select, 'selctx', TrainGauss, 'selctx')
@@ -474,7 +484,7 @@ def init_pca_gauss_detector_model_wf(subject_list, action):
        
     elif action == 'apply':
         
-       model_template = {'pca_model' : 'model/PCA.{dset}', 'gauss_model' : 'model/GAUSS.NITER1.features.{dset}.PCA'}
+       model_template = {'pca_model' : 'model/PCA.{dset}', 'gauss_model' : 'model/GAUSS.NITER10.features.{dset}.PCA' }
        select_model = pe.Node(SelectFiles(model_template), name='select_model')
        select_model.inputs.dset = 'globalSTD'
         
@@ -493,30 +503,168 @@ def init_pca_gauss_detector_model_wf(subject_list, action):
        pipeline.connect(select_model, ('gauss_model', top_dir), ApplyGAUSSmodel, 'model_dir')    
        
      
-    elif action == 'detect':
+    elif action == 'train_fcd_detector':
         
           
         #grab everyones features
-        smooth_template = {'features': '{subject_id}/data/dset/*features.globalSTD.PCA.GAUSS.NITER10.1D.dset', 'specs' : '{subject_id}/data/*_?h.spec' }
+        smooth_template = {'features': '{subject_id}/data/dset/*features.globalSTD.PCA.GAUSS.NITER10.1D.dset', 
+                           'specs' : '{subject_id}/data/*_?h.spec',
+                           'selctx' : '{subject_id}/data/dset/*sel_ctx.1D.dset'}
+        
         select_features = pe.MapNode(SelectFiles(smooth_template, sort_files=True), iterfield=['subject_id'], name='select_features', run_without_submitting=True)
         
-        select_features.inputs.subject_id = subject_list
+        select_features.inputs.subject_id = subjects
         pipeline.connect(inputnode, 'base_directory', select_features, 'base_directory')
             
             
         #smooth them
-        smooth = pe.MapNode(SurfSmooth(), iterfield=['in_file','spec_file'], name='feature_smooth')
+        smooth = pe.MapNode(SurfSmooth(), iterfield=['in_file','spec_file', 'b_mask'], name='feature_smooth')
         smooth.inputs.met = 'HEAT_07'
-            
+        smooth.inputs.fwhm = 10
+        
         pipeline.connect(select_features, ('features',flaten_list), smooth, 'in_file')
         pipeline.connect(select_features, ('specs', flaten_list), smooth, 'spec_file')
-            
+        pipeline.connect(select_features, ('selctx', flaten_list), smooth, 'b_mask')
         
-    pipeline.write_graph(graph2use='orig', dotfilename=f'/Users/abdollahis2/Desktop/fcdproc/fcdproc_wf/PCA_GAUSS_modeling/{action}/graph_detailed.dot')
+        
+        mask_template = {'fcd_mask' :  '{subject_id}/data/dset/*fcd_mask_al.v2s.1D.dset'}
+        select_mask = pe.MapNode(SelectFiles(mask_template, sort_files=True), iterfield=['subject_id'], name='select_mask', run_without_submitting=True)
+        select_mask.inputs.subject_id = pt_pos
+        pipeline.connect(inputnode, 'base_directory', select_mask, 'base_directory')   
+        
+        
+        control_avg = pe.Node(FCD_python.control_avg(), name='control_avg')
+        control_avg.inputs.control_list = controls
+        
+        pipeline.connect(smooth, ('out_file', seperate_subj_features, controls), control_avg, 'features')
+        
+        
+        fcd_detector = pe.Node(FCD_python.train_FCD_detector2(), name='train_fcd')
+        fcd_detector.inputs.subject_list = pt_pos
+        
+        pipeline.connect(smooth, ('out_file', seperate_subj_features, pt_pos), fcd_detector, 'features')
+        pipeline.connect(select_mask, ('fcd_mask', flaten_list), fcd_detector, 'fcd_mask')
+        pipeline.connect(control_avg, 'lh_avg', fcd_detector, 'lh_avg')
+        pipeline.connect(control_avg, 'rh_avg', fcd_detector, 'rh_avg')
+        
+                               
+    pipeline.write_graph(graph2use='orig', dotfilename=f'/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc_wf/PCA_GAUSS_modeling/{action}/graph_detailed.dot')
 
     return pipeline
 
+def apply_fcd_detector_wf(subject):
+    
+    '''
+    Stage applying the FCD detector model to MRI negative patients
+    
+    this includes:
+        
+        - selecting the fcd_detector model, averaged left & right hemisphere data for each node 
+        - as well as selecting the MRI negative patients smoothed feature data
+        -apply the fcd detector model
+    
+        
+    Workflow Graph
+        .. workflow::
+            :graph2use: orig
+            :simple_form: yes
+    
+    from fcdproc.workflow import apply_fcd_detector_wf
+    pca_gauss_model = apply_fcd_detector_wf(
+                        subject=pt_neg,
+                        base_directory = fcdproc_dir
+                        )
+    
+    Parameters
+    ----------
+    subject : :obj:`list`
+        Subject list for this  workflow.
+    
+        
+    Inputs
+    ------
+    subjects : :obj:`list`
+        list of subjects to have action on.
 
+    base_directory: :obj:`str`
+        where the data is taken
+        
+    outputs
+    -------
+    projection: :obj:`str`
+        directory where normalized and unnormalized hemishpere data is stored
+    
+    '''
+
+    import nipype.pipeline.engine as pe
+    import nipype.interfaces.utility as niu
+    from fcdproc.utils.misc import flaten_list
+    from nipype.interfaces.io import SelectFiles
+    import fcdproc.interfaces.FCD_python  as FCD_python 
+    from fcdproc.interfaces.FCD_preproc import SurfSmooth
+
+    pipeline2 = pe.Workflow(name="FCD_detector_Apply")
+
+    
+    inputnode = pe.Node(niu.IdentityInterface(fields=['base_directory']), name='inputnode')
+    
+    model_template = {'pca_model' : 'model/PCA.{dset}',
+                      'gauss_model' : 'model/GAUSS.NITER1.features.{dset}.PCA',
+                      'detector': 'model/fcd_detector',
+                      'avg_lh': 'data/lh_avg.1D.dset', 
+                      'avg_rh':'data/rh_avg.1D.dset',
+                      'model_dir': 'model'}
+    
+    data_template = {'feature': '{subject_id}/data/dset/*features.globalSTD.1D.dset',
+                    'selctx' : '{subject_id}/data/dset/*sel_ctx.1D.dset',
+                    'specs' : '{subject_id}/data/*_?h.spec' }
+    
+    select_models = pe.Node(SelectFiles(model_template, sort_files=True), name='select_models_pt_neg', run_without_submitting=True)
+    select_models.inputs.dset = 'globalSTD'
+    pipeline2.connect(inputnode, 'base_directory', select_models, 'base_directory')
+    
+    
+    select_data = pe.MapNode(SelectFiles(data_template, sort_files=True), iterfield=['subject_id'], name='select_data_pt_neg', run_without_submitting=True)
+    select_data.inputs.subject_id = subject
+    pipeline2.connect(inputnode, 'base_directory', select_data, 'base_directory')
+    
+    #apply PCA 
+    ApplyPCAptNEG = pe.Node(FCD_python.ApplyPCA(), name='pca_apply_pt_neg')
+    
+    pipeline2.connect(select_models, 'pca_model', ApplyPCAptNEG, 'model')
+    pipeline2.connect(select_data, 'feature',  ApplyPCAptNEG, 'features')
+    pipeline2.connect(select_data, 'selctx', ApplyPCAptNEG, 'selctx')
+    
+                      
+    #apply Gauss
+    ApplyGaussptNEG = pe.Node(FCD_python.ApplyGauss(), name='gauss_apply_pt_neg')
+    
+    pipeline2.connect(select_models,'model_dir', ApplyGaussptNEG, 'model_dir')
+    pipeline2.connect(select_data, 'selctx', ApplyGaussptNEG, 'selctx')
+    pipeline2.connect(ApplyPCAptNEG, 'data', ApplyGaussptNEG, 'features_pca')
+        
+    
+    #apply smooth
+    smooth = pe.MapNode(SurfSmooth(), iterfield=['in_file','spec_file', 'b_mask'], name='feature_smooth_pt_neg')
+    smooth.inputs.met = 'HEAT_07'
+    smooth.inputs.fwhm = 10
+    
+    pipeline2.connect(ApplyGaussptNEG, 'gauss_n10', smooth, 'in_file')
+    pipeline2.connect(select_data, ('specs', flaten_list), smooth, 'spec_file')
+    pipeline2.connect(select_data, ('selctx', flaten_list), smooth, 'b_mask')
+    
+    
+    #apply fcd detector
+    apply_fcd_model = pe.Node(FCD_python.ApplyFCDdetector(), name='apply_fcd')
+    apply_fcd_model.inputs.subject_list = subject
+        
+    pipeline2.connect(smooth, 'out_file', apply_fcd_model, 'features')
+    pipeline2.connect(select_models, 'detector', apply_fcd_model, 'fcd_detector')
+    pipeline2.connect(select_models, 'avg_lh', apply_fcd_model, 'lh_avg')
+    pipeline2.connect(select_models, 'avg_rh', apply_fcd_model, 'rh_avg')
+        
+    pipeline2.write_graph(graph2use='orig', dotfilename='/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc_wf/FCD_detector_apply/graph_detailed.dot')
+    return pipeline2
    
 
 if __name__=='__main__':

@@ -21,7 +21,7 @@ from fcdproc.interfaces import FCD_preproc, FCD_python
 from fcdproc.utils.misc import  annot_niml_dset_filename, colormap_surface_filename, joinpath, split_file_ext, convert_filename
 
 freesurfer_dir = os.environ['SUBJECTS_DIR']
-bids_dir = '/Users/abdollahis2/Desktop/fcdproc/fcdproc/data/'
+bids_dir = '/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc/data/'
 #bids_dir = config.excution.bids_dir
 helper_dir = os.path.join(bids_dir, '__files/')
 
@@ -121,7 +121,7 @@ def subject_fs_suma_wf(*, output_dir, name="fs_suma", freesurfer, omp_nthreads):
     #resampling cortical surface (this doesnt need to have the out_file inputed, by default it creates a filename:{lh/rh}.lausanne_250.02.annot)- MODIFY LATER
     mri_surf2surf = pe.MapNode(interface=SurfaceTransform(), iterfield=['source_annot_file','hemi', 'out_file'], name='mri_s2s')
     mri_surf2surf.inputs.hemi = ['lh', 'rh'] 
-    mri_surf2surf.inputs.source_annot_file = ['/Users/abdollahis2/Desktop/fcdproc/fcdproc/derivatives/freesurfer/fsaverage/label/lh.lausanne_250.annot', '/Users/abdollahis2/Desktop/fcdproc/fcdproc/derivatives/freesurfer/fsaverage/label/rh.lausanne_250.annot']
+    mri_surf2surf.inputs.source_annot_file = ['/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc/derivatives/freesurfer/fsaverage/label/lh.lausanne_250.annot', '/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc/derivatives/freesurfer/fsaverage/label/rh.lausanne_250.annot']
     mri_surf2surf.inputs.source_subject = 'fsaverage'
     mri_surf2surf.inputs.subjects_dir = freesurfer_dir
     joinpath5 = joinpath1.clone(name='mri_surf2surf_dset')

@@ -79,3 +79,19 @@ def split_hemi_files(spec_file,hemi):
                 file = spec_file[i]
                 
     return file
+
+def seperate_subj_features(features_list, pt_positive):
+    features = []
+    for i in range(len(features_list)):
+        for subj in pt_positive:
+            if subj in features_list[i]:
+                features.append(features_list[i])
+                
+    return features
+    
+    
+    
+    
+    
+    
+    
