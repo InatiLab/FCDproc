@@ -11,6 +11,8 @@ from nipype.interfaces.base import BaseInterface, \
     BaseInterfaceInputSpec, traits, Directory, Str,File, TraitedSpec
     
 from nipype.utils.filemanip import  split_filename
+from fcdproc.utils.misc import flat_and_select, seperate_subj_features
+
 NHEMI=36002
 
 class SelectCortexInputSpec(BaseInterfaceInputSpec):
@@ -274,7 +276,7 @@ class TrainPCAInputSpec(BaseInterfaceInputSpec):
 
     features = traits.List(desc="list of all standardized features 1D files on both hemisphere")    
     selctx = traits.List(desc="list of both hemisphere sel cortex")
-   
+    group = traits.List(desc="subject group to perform analysis on. can be controls, pt_positive, or pt_negative")
 
 class TrainPCAOutputSpec(TraitedSpec):
     
@@ -295,10 +297,14 @@ class TrainPCA(BaseInterface):
         
         feature = self.inputs.features
         feat_flat = [item for sublist in feature for item in sublist]
-
+        
         sel = self.inputs.selctx
         selctx_flat = [item for sublist in sel for item in sublist]
-
+        
+        subj_list = self.inputs.group
+        
+        features = seperate_subj_features(feat_flat, subj_list)
+        selctx = seperate_subj_features(selctx_flat, subj_list)
         
         dset_dir, base, ext = split_filename(feat_flat[0])
         data_dir = os.path.dirname(dset_dir)
@@ -325,11 +331,11 @@ class TrainPCA(BaseInterface):
 
         
         data = []
-        for i in range(len(feature)):
+        for i in range(int(len(features)/2)):
            
-           sel = loadDset(selctx_flat[2*i], selctx_flat[2*i+1])
+           sel = loadDset(selctx[2*i], selctx[2*i+1])
            sel = np.ravel(sel == 1)
-           xx = loadDset(feat_flat[2*i], feat_flat[2*i+1])
+           xx = loadDset(features[2*i], features[2*i+1])
            xx = xx[sel,:]
            data.append(xx)
            
@@ -470,7 +476,8 @@ class TrainGaussInputSpec(BaseInterfaceInputSpec):
     
         features_pca = traits.List(desc="list of all standardized features 1D files on both hemisphere")    
         selctx = traits.List(desc="list of both hemisphere sel cortex")
-    
+        group = traits.List(desc="subject group to perform analysis on. can be controls, pt_positive, or pt_negative")
+        
 class TrainGaussoutputSpec(TraitedSpec):
 
     gauss_iter1 = traits.File(desc="learned gaussinaization model on first iteration")
@@ -483,6 +490,7 @@ class TrainGaussoutputSpec(TraitedSpec):
     gauss_iter8 = traits.File(desc="learned gaussinaization model on eighth iteration")
     gauss_iter9 = traits.File(desc="learned gaussinaization model on nineth iteration")
     gauss_iter10 = traits.File(desc="learned gaussinaization model on tenth iteration")
+    model_dir = Directory(desc='gauss model output directory')
     
 class TrainGauss(BaseInterface):    
     
@@ -499,9 +507,12 @@ class TrainGauss(BaseInterface):
     
     
         featurePCA = self.inputs.features_pca
+        subj_list = self.inputs.group
         selctx = self.inputs.selctx
         selctx_flat = [item for sublist in selctx for item in sublist]
 
+        features = seperate_subj_features(featurePCA, subj_list)
+        selctx = seperate_subj_features(selctx_flat, subj_list)
         
         dset_dir, base, ext = split_filename(featurePCA[0])
         data_dir = os.path.dirname(dset_dir)
@@ -524,11 +535,11 @@ class TrainGauss(BaseInterface):
            return data 
        
         data = []
-        for i in range(len(selctx)):
+        for i in range(int(len(selctx)/2)):
            
-           sel = loadDset(selctx_flat[2*i], selctx_flat[2*i+1])
+           sel = loadDset(selctx[2*i], selctx[2*i+1])
            sel = np.ravel(sel == 1)
-           xx = loadDset(featurePCA[2*i], featurePCA[2*i+1])
+           xx = loadDset(features[2*i], features[2*i+1])
            xx = xx[sel,:]
            data.append(xx)
            
@@ -578,6 +589,7 @@ class TrainGauss(BaseInterface):
               outputs["gauss_iter8"] = os.path.abspath(wdir+'/GAUSS.NITER8.features.globalSTD.PCA')
               outputs["gauss_iter9"] = os.path.abspath(wdir+'/GAUSS.NITER9.features.globalSTD.PCA')
               outputs["gauss_iter10"] = os.path.abspath(wdir+'/GAUSS.NITER10.features.globalSTD.PCA')
+              outputs["model_dir"] = os.path.abspath(wdir)
               
               return outputs
 
@@ -600,7 +612,7 @@ class ApplyGaussOutputSpec(TraitedSpec):
     gauss_n8 = traits.List(desc='output left hemisphere file in the form of std.60.lh.features.globalSTD.PCA.1D.dset')
     gauss_n9 = traits.List(desc='output left hemisphere file in the form of std.60.lh.features.globalSTD.PCA.1D.dset')
     gauss_n10 = traits.List(desc='output left hemisphere file in the form of std.60.lh.features.globalSTD.PCA.1D.dset')
-    
+   
     
     
 class ApplyGauss(BaseInterface):
@@ -725,7 +737,7 @@ class ApplyGauss(BaseInterface):
            outputs["gauss_n8"] = [os.path.abspath(wdir+'/std.60.lh.features.globalSTD.PCA.GAUSS.NITER8.1D.dset'), os.path.abspath(wdir+'/std.60.rh.features.globalSTD.PCA.GAUSS.NITER8.1D.dset')]
            outputs["gauss_n9"] = [os.path.abspath(wdir+'/std.60.lh.features.globalSTD.PCA.GAUSS.NITER9.1D.dset'), os.path.abspath(wdir+'/std.60.rh.features.globalSTD.PCA.GAUSS.NITER9.1D.dset')]
            
-
+           
        return outputs
        
     

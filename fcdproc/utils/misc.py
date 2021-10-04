@@ -90,7 +90,20 @@ def seperate_subj_features(features_list, pt_positive):
     return features
     
     
+def flat_and_select(list_files, group):
+    feature_list = [j for i in list_files for j in i]
+    features = []
+    for i in range(len(feature_list)):
+        for subj in group:
+            if subj in feature_list[i]:
+                features.append(feature_list[i])
+                
+                
+def top_dir(path):
+    import os
+    return os.path.dirname(path)
     
+    return features     
     
     
     

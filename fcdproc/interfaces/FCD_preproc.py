@@ -128,6 +128,7 @@ class SumaMakeSpecOutputSpec(TraitedSpec):
     sphere_reg = traits.List(desc='shpere reg surface file')
     white = traits.List(desc='white surface file')
     smoothwm = traits.List(desc='smooth white matter surface file')
+    dual_sphere_reg = traits.List(desc='lh/rh.sphere.reg surface file')
     
 
 class SumaMakeSpecFS(CommandLine):
@@ -158,7 +159,7 @@ class SumaMakeSpecFS(CommandLine):
         outputs['sphere_reg'] = [os.path.join(self.inputs.in_file, 'SUMA/std.60.lh.sphere.reg.gii'), os.path.join(self.inputs.in_file ,'SUMA/std.60.rh.sphere.reg.gii')]
         outputs['white'] = [os.path.join(self.inputs.in_file, 'SUMA/std.60.lh.white.gii'), os.path.join(self.inputs.in_file ,'SUMA/std.60.rh.white.gii')]
         outputs['smoothwm'] = [os.path.join(self.inputs.in_file, 'SUMA/std.60.lh.smoothwm.gii'), os.path.join(self.inputs.in_file ,'SUMA/std.60.rh.smoothwm.gii')]
-        
+        outputs['dual_sphere_reg'] = [os.path.join(self.inputs.in_file, 'SUMA/std.60.lh.rh.sphere.reg.gii'), os.path.join(self.inputs.in_file ,'SUMA/std.60.rh.lh.sphere.reg.gii')]
         
         
         
