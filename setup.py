@@ -1,7 +1,8 @@
 from os import path
 from setuptools import setup, find_packages
 import sys
-#import versioneer
+import subprocess
+import versioneer
 
 
 # NOTE: This file must remain Python 2 compatible for the foreseeable future,
@@ -10,7 +11,7 @@ import sys
 min_version = (3, 6)
 if sys.version_info < min_version:
     error = """
-jem does not support Python {0}.{1}.
+fcdproc does not support Python {0}.{1}.
 Python {2}.{3} and above is required. Check your Python version like so:
 python3 --version
 This may be due to an out-of-date pip. Make sure you have pip >= 9.0.1.
@@ -37,10 +38,7 @@ with open(path.join(here, "requirements.txt")) as requirements_file:
 
 setup(
     name="fcdproc",
-    version= "0.1",
-    #py_module=['']
-    #version=versioneer.get_version(),
-    #cmdclass=versioneer.get_cmdclass(),
+    version= versioneer.get_version(),
     description="Python package for FCD lesion detection.",
     long_description=readme,
     author="Inati Lab, NINDS, NIH",
