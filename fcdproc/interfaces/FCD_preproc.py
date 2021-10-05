@@ -128,6 +128,7 @@ class SumaMakeSpecOutputSpec(TraitedSpec):
     sphere_reg = traits.List(desc='shpere reg surface file')
     white = traits.List(desc='white surface file')
     smoothwm = traits.List(desc='smooth white matter surface file')
+    dual_sphere_reg = traits.List(desc='lh/rh.sphere.reg surface file')
     
 
 class SumaMakeSpecFS(CommandLine):
@@ -158,7 +159,7 @@ class SumaMakeSpecFS(CommandLine):
         outputs['sphere_reg'] = [os.path.join(self.inputs.in_file, 'SUMA/std.60.lh.sphere.reg.gii'), os.path.join(self.inputs.in_file ,'SUMA/std.60.rh.sphere.reg.gii')]
         outputs['white'] = [os.path.join(self.inputs.in_file, 'SUMA/std.60.lh.white.gii'), os.path.join(self.inputs.in_file ,'SUMA/std.60.rh.white.gii')]
         outputs['smoothwm'] = [os.path.join(self.inputs.in_file, 'SUMA/std.60.lh.smoothwm.gii'), os.path.join(self.inputs.in_file ,'SUMA/std.60.rh.smoothwm.gii')]
-        
+        outputs['dual_sphere_reg'] = [os.path.join(self.inputs.in_file, 'SUMA/std.60.lh.rh.sphere.reg.gii'), os.path.join(self.inputs.in_file ,'SUMA/std.60.rh.lh.sphere.reg.gii')]
         
         
         
@@ -413,9 +414,10 @@ class SurfSmooth_InputSpec(CommandLineInputSpec):
     spec_file = traits.File(desc="SUMA spec file", argstr='-spec %s',exists=True, mandatory=True)
     surf_A = traits.Str(desc="the surface to smooth", argstr='-surf_A %s', default_value='white', usedefault=True)   
     in_file = traits.File(desc="file containing data (in 1D or NIML format)", argstr='-input %s', exist=True, mandatory=True)
-    fwhm = traits.Float(desc="Blur by a Gaussian filter that has a Full Width at Half Maximum in surface coordinate units (usuallly mm) of F", argstr='-fwhm %d', default_value=10, usedefault=True)
+    fwhm = traits.Float(desc="Blur by a Gaussian filter that has a Full Width at Half Maximum in surface coordinate units (usuallly mm) of F", argstr='-fwhm %d')
     met = traits.Enum("HEAT_07", "HEAT_05", "LM", "NN_geom", desc="methods to filter the data on surface", argstr='-met %s', mandatory=True)
     out_file = traits.File(desc="output file name", argstr='-output %s', genfile=True)
+    b_mask = traits.File(desc="binary mask 1D file", argstr='-b_mask %s', exists=True, mandatory=True)
     
 class SurfSmooth_OutputSpec(TraitedSpec):
     

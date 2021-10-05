@@ -11,6 +11,9 @@ from nipype.interfaces.base import BaseInterface, \
     BaseInterfaceInputSpec, traits, Directory, Str,File, TraitedSpec
     
 from nipype.utils.filemanip import  split_filename
+from fcdproc.utils.misc import flat_and_select, seperate_subj_features
+
+NHEMI=36002
 
 class SelectCortexInputSpec(BaseInterfaceInputSpec):
     in_file = traits.List(exist=True, mandatory=True, desc="SUMA 1D file") 
@@ -273,11 +276,13 @@ class TrainPCAInputSpec(BaseInterfaceInputSpec):
 
     features = traits.List(desc="list of all standardized features 1D files on both hemisphere")    
     selctx = traits.List(desc="list of both hemisphere sel cortex")
-   
+    group = traits.List(desc="subject group to perform analysis on. can be controls, pt_positive, or pt_negative")
 
 class TrainPCAOutputSpec(TraitedSpec):
     
    pca = traits.File(desc="learned pca model that explains 90% of variance")
+   data = traits.File(desc="pca-reduced dataset from all controls")
+
 
 class TrainPCA(BaseInterface):
     
@@ -286,25 +291,30 @@ class TrainPCA(BaseInterface):
 
    def _run_interface(self, runtime):
         import numpy as np
-        import sys
         import os
-        from pathlib import Path
         import joblib
         from sklearn.decomposition import PCA
         
         feature = self.inputs.features
         feat_flat = [item for sublist in feature for item in sublist]
-        #feature_array = np.array(feature)
+        
         sel = self.inputs.selctx
         selctx_flat = [item for sublist in sel for item in sublist]
-        #sel_array = np.array(sel)
+        
+        subj_list = self.inputs.group
+        
+        features = seperate_subj_features(feat_flat, subj_list)
+        selctx = seperate_subj_features(selctx_flat, subj_list)
         
         dset_dir, base, ext = split_filename(feat_flat[0])
         data_dir = os.path.dirname(dset_dir)
         subj_dir = os.path.dirname(data_dir)
         wdir = os.path.dirname(subj_dir)+'/model'
+        dat_dir = os.path.dirname(subj_dir)+'/data'
         if not os.path.exists(wdir):
             os.makedirs(wdir)
+        if not os.path.exists(dat_dir):
+            os.makedirs(dat_dir)
         
         def loadDset(lh_data,rh_data):
            lh_data = np.loadtxt(lh_data, dtype=np.float32, comments='#')
@@ -321,11 +331,11 @@ class TrainPCA(BaseInterface):
 
         
         data = []
-        for i in range(len(feature)):
+        for i in range(int(len(features)/2)):
            
-           sel = loadDset(selctx_flat[2*i], selctx_flat[2*i+1])
+           sel = loadDset(selctx[2*i], selctx[2*i+1])
            sel = np.ravel(sel == 1)
-           xx = loadDset(feat_flat[2*i], feat_flat[2*i+1])
+           xx = loadDset(features[2*i], features[2*i+1])
            xx = xx[sel,:]
            data.append(xx)
            
@@ -334,7 +344,7 @@ class TrainPCA(BaseInterface):
         pca = PCA(copy=True, iterated_power='auto', n_components=0.9, random_state=None, svd_solver='auto', tol=0.0, whiten=False)
         Z = pca.fit_transform(data)
         joblib.dump(pca, wdir+'/PCA.globalSTD')
-       
+        joblib.dump(Z, dat_dir+'/globalSTD.PCA')
        
         return runtime
     
@@ -348,11 +358,15 @@ class TrainPCA(BaseInterface):
        data_dir = os.path.dirname(dset_dir)
        subj_dir = os.path.dirname(data_dir)
        wdir = os.path.dirname(subj_dir)+'/model'
+       dat_dir = os.path.dirname(subj_dir)+'/data'
+       
        if not os.path.exists(wdir):
             os.makedirs(wdir)
+       if not os.path.exists(dat_dir):
+            os.makedirs(dat_dir)
         
        outputs["pca"] = os.path.abspath(wdir+'/PCA.globalSTD')
-        
+       outputs["data"] = os.path.abspath(dat_dir+'/globalSTD.PCA')
         
        return outputs    
     
@@ -365,7 +379,7 @@ class ApplyPCAInputSpec(BaseInterfaceInputSpec):
 class ApplyPCAOutputSpec(TraitedSpec):
     
     data = traits.List(traits.File(desc='output left hemisphere file in the form of std.60.${hemi}.features.globalSTD.PCA.1D.dset'))
-    #rh_data = traits.List(desc='output right hemisphere file in the form of std.60.rh.features.globalSTD.PCA.1D.dset')
+    
     
 class ApplyPCA(BaseInterface):
     
@@ -374,9 +388,6 @@ class ApplyPCA(BaseInterface):
 
    def _run_interface(self, runtime):
         import numpy as np
-        import sys
-        import os
-        from pathlib import Path
         import joblib
         
         
@@ -465,7 +476,8 @@ class TrainGaussInputSpec(BaseInterfaceInputSpec):
     
         features_pca = traits.List(desc="list of all standardized features 1D files on both hemisphere")    
         selctx = traits.List(desc="list of both hemisphere sel cortex")
-    
+        group = traits.List(desc="subject group to perform analysis on. can be controls, pt_positive, or pt_negative")
+        
 class TrainGaussoutputSpec(TraitedSpec):
 
     gauss_iter1 = traits.File(desc="learned gaussinaization model on first iteration")
@@ -478,6 +490,7 @@ class TrainGaussoutputSpec(TraitedSpec):
     gauss_iter8 = traits.File(desc="learned gaussinaization model on eighth iteration")
     gauss_iter9 = traits.File(desc="learned gaussinaization model on nineth iteration")
     gauss_iter10 = traits.File(desc="learned gaussinaization model on tenth iteration")
+    model_dir = Directory(desc='gauss model output directory')
     
 class TrainGauss(BaseInterface):    
     
@@ -487,26 +500,26 @@ class TrainGauss(BaseInterface):
     def _run_interface(self, runtime):
         
         import numpy as np
-        import sys
         import os
-        from pathlib import Path
         import joblib
         from sklearn.preprocessing import QuantileTransformer
         from sklearn.decomposition import PCA
     
     
         featurePCA = self.inputs.features_pca
+        subj_list = self.inputs.group
         selctx = self.inputs.selctx
         selctx_flat = [item for sublist in selctx for item in sublist]
 
+        features = seperate_subj_features(featurePCA, subj_list)
+        selctx = seperate_subj_features(selctx_flat, subj_list)
         
         dset_dir, base, ext = split_filename(featurePCA[0])
         data_dir = os.path.dirname(dset_dir)
         subj_dir = os.path.dirname(data_dir)
         wdir = os.path.dirname(subj_dir)+'/model'
         dat_dir = os.path.dirname(subj_dir)+'/data'
-        if not os.path.exists(dat_dir):
-            os.makedirs(dat_dir)
+
             
         def loadDset(lh_data,rh_data):
            lh_data = np.loadtxt(lh_data, dtype=np.float32, comments='#')
@@ -522,11 +535,11 @@ class TrainGauss(BaseInterface):
            return data 
        
         data = []
-        for i in range(len(selctx)):
+        for i in range(int(len(selctx)/2)):
            
-           sel = loadDset(selctx_flat[2*i], selctx_flat[2*i+1])
+           sel = loadDset(selctx[2*i], selctx[2*i+1])
            sel = np.ravel(sel == 1)
-           xx = loadDset(featurePCA[2*i], featurePCA[2*i+1])
+           xx = loadDset(features[2*i], features[2*i+1])
            xx = xx[sel,:]
            data.append(xx)
            
@@ -576,6 +589,7 @@ class TrainGauss(BaseInterface):
               outputs["gauss_iter8"] = os.path.abspath(wdir+'/GAUSS.NITER8.features.globalSTD.PCA')
               outputs["gauss_iter9"] = os.path.abspath(wdir+'/GAUSS.NITER9.features.globalSTD.PCA')
               outputs["gauss_iter10"] = os.path.abspath(wdir+'/GAUSS.NITER10.features.globalSTD.PCA')
+              outputs["model_dir"] = os.path.abspath(wdir)
               
               return outputs
 
@@ -598,7 +612,7 @@ class ApplyGaussOutputSpec(TraitedSpec):
     gauss_n8 = traits.List(desc='output left hemisphere file in the form of std.60.lh.features.globalSTD.PCA.1D.dset')
     gauss_n9 = traits.List(desc='output left hemisphere file in the form of std.60.lh.features.globalSTD.PCA.1D.dset')
     gauss_n10 = traits.List(desc='output left hemisphere file in the form of std.60.lh.features.globalSTD.PCA.1D.dset')
-    
+   
     
     
 class ApplyGauss(BaseInterface):
@@ -701,6 +715,15 @@ class ApplyGauss(BaseInterface):
        selctx = self.inputs.selctx
        selctx_flat = [item for sublist in selctx for item in sublist]
        
+       gauss_n10_list = []
+       for i in range((len(selctx))):
+           
+           wdir, base, ext = split_filename(selctx_flat[2*i])
+           for hemi in ['lh', 'rh']:
+               gauss_n10_list.append(os.path.abspath(wdir+'/std.60.' + hemi + '.features.globalSTD.PCA.GAUSS.NITER10.1D.dset'))
+           
+       outputs["gauss_n10"] = gauss_n10_list
+       
        for i in range((len(selctx))):
            wdir, base, ext = split_filename(selctx_flat[2*i])
            
@@ -713,44 +736,356 @@ class ApplyGauss(BaseInterface):
            outputs["gauss_n7"] = [os.path.abspath(wdir+'/std.60.lh.features.globalSTD.PCA.GAUSS.NITER7.1D.dset'), os.path.abspath(wdir+'/std.60.rh.features.globalSTD.PCA.GAUSS.NITER7.1D.dset')]
            outputs["gauss_n8"] = [os.path.abspath(wdir+'/std.60.lh.features.globalSTD.PCA.GAUSS.NITER8.1D.dset'), os.path.abspath(wdir+'/std.60.rh.features.globalSTD.PCA.GAUSS.NITER8.1D.dset')]
            outputs["gauss_n9"] = [os.path.abspath(wdir+'/std.60.lh.features.globalSTD.PCA.GAUSS.NITER9.1D.dset'), os.path.abspath(wdir+'/std.60.rh.features.globalSTD.PCA.GAUSS.NITER9.1D.dset')]
-           outputs["gauss_n10"] = [os.path.abspath(wdir+'/std.60.lh.features.globalSTD.PCA.GAUSS.NITER10.1D.dset'), os.path.abspath(wdir+'/std.60.rh.features.globalSTD.PCA.GAUSS.NITER10.1D.dset')]
            
-
+           
        return outputs
        
     
     
+class train_FCD_detector_InputSpec(BaseInterfaceInputSpec):
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    features = traits.List(desc='list of subjects smoothed feature data')
+    fcd_mask = traits.List(desc='list of fcd_mask for patient postive')
     
         
+class train_FCD_detector_OutputSpec(TraitedSpec):
+
+    fcd_detector = traits.File(desc='fcd detector learned model')
+    
+class train_FCD_detector(BaseInterface):    
+    
+    input_spec = train_FCD_detector_InputSpec
+    output_spec = train_FCD_detector_OutputSpec
+    
+    def _run_interface(self, runtime):
+        
+        import numpy as np
+        from sklearn.decomposition import TruncatedSVD
+        import joblib
+        
+        features = self.inputs.features
+        fcd_mask = self.inputs.fcd_mask
+        
+            
+            
+        dset_dir, base, ext = split_filename(features[0])
+        data_dir = os.path.dirname(dset_dir)
+        subj_dir = os.path.dirname(data_dir)
+        wdir = os.path.dirname(subj_dir)+'/model'
+        
+        data = []
+        for i in range(len(fcd_mask)):
+                
+                feat_data = np.loadtxt(features[i], dtype=np.float32, comments='#')
+    
+                mask_data = np.loadtxt(fcd_mask[i], dtype=np.float32, comments='#')
+            
+                fcd_indx = np.ravel(mask_data == 1)
+                
+                feature_data = feat_data[fcd_indx,:]
+                
+                if len(feature_data) != 0:
+                  
+                    data.append(feature_data)
+                   
+                else:
+                    continue
+        
+        fcds_means = np.vstack([d.mean(axis=0) for d in data])
+        #SVD
+        svd = TruncatedSVD(n_components=2)
+        svd.fit(fcds_means)
+        
+        x_hat = svd.components_[0]
+        y_hat = svd.components_[1]
+        y_hat = -1.0*y_hat
+        
+        joblib.dump(x_hat, wdir+'/fcd_detector_v1')
+        
+        return runtime
+    
+         
+    def _list_outputs(self): 
+       import os
+       outputs = self._outputs().get()
+       features = self.inputs.features
+       dset_dir, base, ext = split_filename(features[0])
+       data_dir = os.path.dirname(dset_dir)
+       subj_dir = os.path.dirname(data_dir)
+       wdir = os.path.dirname(subj_dir)+'/model'
+       
+       outputs["fcd_detector"] = os.path.abspath(wdir+'/fcd_detector_v1')
+        
+        
+       return outputs
+    
+    
+class control_avg_InputSpec(BaseInterfaceInputSpec):
+
+    features = traits.List(desc='list of control subject smoothed data')        
+    control_list = traits.List(desc='list of control subjects')
+    
+class control_avg_outputSpec(TraitedSpec): 
+    
+    lh_avg = traits.File(desc='average of left hemisphere dataset')
+    rh_avg = traits.File(desc='average of right hemisphere dataset')
+    
+class control_avg(BaseInterface):
+    
+    input_spec = control_avg_InputSpec
+    output_spec = control_avg_outputSpec
+    
+    def _run_interface(self, runtime):
+        
+        import numpy as np
+        
+        
+        features = self.inputs.features
+        control_list = self.inputs.control_list
+
+        dset_dir, base, ext = split_filename(features[0])
+        data_dir = os.path.dirname(dset_dir)
+        subj_dir = os.path.dirname(data_dir)
+        dat_dir = os.path.dirname(subj_dir)+'/data/'
+        
+        
+               
+        lh_arr=[]
+        rh_arr=[]
+        for n,subj in enumerate(control_list):
+            
+            lh_feature=np.loadtxt(features[2*n])
+            lh_arr.append(lh_feature)
+        
+            rh_feature=np.loadtxt(features[2*n+1])
+            rh_arr.append(rh_feature)
+        
+        
+        lh_data = np.array(lh_arr)
+        lh_avg = np.mean(lh_data, axis=0)
+        
+        rh_data = np.array(rh_arr)
+        rh_avg = np.mean(rh_data, axis=0)
+
+        
+        np.savetxt(dat_dir + 'lh_avg.1D.dset', lh_avg)
+        np.savetxt(dat_dir + 'rh_avg.1D.dset', rh_avg)  
+        
+        return runtime
+    
+    def _list_outputs(self):
+        import os
+        
+        outputs = self._outputs().get() 
+        features = self.inputs.features
+        #control_list = self.inputs.control_list
+        
+        dset_dir, base, ext = split_filename(features[0])
+        data_dir = os.path.dirname(dset_dir)
+        subj_dir = os.path.dirname(data_dir)
+        dat_dir = os.path.dirname(subj_dir)+'/data'
+        
+        outputs["lh_avg"] = os.path.abspath(dat_dir+'/lh_avg.1D.dset')
+        
+        outputs["rh_avg"] = os.path.abspath(dat_dir+'/rh_avg.1D.dset')
+    
+        return outputs
+    
+class ApplyFCDdetector_InputSpec(BaseInterfaceInputSpec):
+    
+        
+    features = traits.List(desc='list of MRI negative epilepsy patinets')
+    subject_list = traits.List(desc='list of patient negatives')
+    fcd_detector = traits.File(desc='the detector model learnt from pt positives')
+    lh_avg = traits.File(desc='left hemishphere average file')
+    rh_avg = traits.File(desc='right hemisphere average file')
+    
+class ApplyFCDdetector_outputSpec(TraitedSpec):
+        
+    data = traits.List(traits.File(desc='output left hemisphere file in the form of std.60.${hemi}.fcd_proj_{n}.1D.dset'))
+    
+class ApplyFCDdetector(BaseInterface):
+    
+    input_spec = ApplyFCDdetector_InputSpec
+    output_spec = ApplyFCDdetector_outputSpec
+    
+    def _run_interface(self, runtime):
+        
+        
+        import numpy as np
+        import joblib
+        import os
+        
+        x_hat = self.inputs.fcd_detector
+        lh_avg = self.inputs.lh_avg
+        rh_avg = self.inputs.rh_avg 
+        features = self.inputs.features
+        subj_list = self.inputs.subject_list
+        
+        
+
+        lh_avg = np.loadtxt(lh_avg, dtype=np.float32, comments='#')
+        rh_avg =  np.loadtxt(rh_avg, dtype=np.float32, comments='#')
+        fcd_model = joblib.load(x_hat)
+
+        
+        for subj in subj_list:
+            
+            for norm in [0,1]:
+                
+                subject_proj = np.zeros([2, NHEMI])
+                for hemi_idx, hemi in enumerate(['lh', 'rh']):
+                    if hemi == 'lh':
+                        mean_data = lh_avg
+                    else:
+                        mean_data = rh_avg
+                    
+                    for file in features:
+                    
+                        if subj in file and hemi in file:
+                            
+                            subj_data = np.loadtxt(file, dtype=np.float32, comments='#')
+                            wdir = os.path.dirname(file)
+                            proj_dir = wdir +'/projections/'
+                            
+                            if not os.path.exists(proj_dir):
+                               os.makedirs(proj_dir)
+                            
+                    if norm == 0:
+                        z_data = subj_data
+                        
+                    elif norm == 1:
+                        z_data = subj_data - mean_data
+                            
+                    proj = np.dot(z_data, fcd_model)   
+                    subject_proj[hemi_idx, :] = proj
+                    np.savetxt(proj_dir + 'std.60.{}.fcd_proj_{}.1D.dset'.format(hemi, str(norm)), proj)
+                  
+        
+        return runtime                    
+
+    def _list_outputs(self):
+        
+        import os
+        
+        outputs = self._outputs().get() 
+        features = self.inputs.features
+        subj_list = self.inputs.subject_list
+            
+        fcd_dectector_list = []
+        for subj in subj_list:
+            for norm in [0,1]:
+                for hemi in ['lh', 'rh']:
+                    for file in features:
+                        wdir = os.path.dirname(file)
+                        proj_dir = wdir +'/projections/'
+                        if subj in file and hemi in file:
+                            fcd_dectector_list.append(os.path.join(proj_dir, 'std.60.' + hemi + '.fcd_proj_'+ str(norm) +'.1D.dset'))
+                            
+                            
+        outputs['data'] = fcd_dectector_list             
+                
+        return outputs
+                            
+class train_FCD_detector2_InputSpec(BaseInterfaceInputSpec):
+    
+    features = traits.List(desc='list of subjects smoothed feature data')
+    fcd_mask = traits.List(desc='list of fcd_mask for patient postive')
+    lh_avg = traits.File(desc='left hemishphere average file')
+    rh_avg = traits.File(desc='right hemisphere average file')
+    subject_list = traits.List(desc='list of patient positives')
+
+        
+class train_FCD_detector2_OutputSpec(TraitedSpec):
+
+    fcd_detector = traits.File(desc='fcd detector learned model')
+    
+class train_FCD_detector2(BaseInterface):    
+    
+    input_spec = train_FCD_detector2_InputSpec
+    output_spec = train_FCD_detector2_OutputSpec
+    
+    def _run_interface(self, runtime):
+        
+        import numpy as np
+        import joblib
+        import os
+        
+        features = self.inputs.features
+        fcd_mask = self.inputs.fcd_mask
+        lh_avg = self.inputs.lh_avg
+        rh_avg = self.inputs.rh_avg 
+        pt_positive = self.inputs.subject_list
+          
+            
+        lh_avg = np.loadtxt(lh_avg, dtype=np.float32, comments='#')
+        rh_avg =  np.loadtxt(rh_avg, dtype=np.float32, comments='#')
+        
+        
+        dset_dir, base, ext = split_filename(features[0])
+        data_dir = os.path.dirname(dset_dir)
+        subj_dir = os.path.dirname(data_dir)
+        wdir = os.path.dirname(subj_dir)+'/model'
+
+        data = []
+        for i,subj in enumerate(pt_positive):
+
+            for hemi in ['lh', 'rh']:
+                if subj and hemi in features[2*i]:
+                    print('processing {} data for subj {}'.format(hemi, subj))
+                    feat_data = np.loadtxt(features[2*i], dtype=np.float32, comments='#')
+                    mask_data = np.loadtxt(fcd_mask[2*i], dtype=np.float32, comments='#')
+
+                    fcd_indx = np.ravel(mask_data == 1)
+                    feat_data = feat_data[fcd_indx,:]
+                    avg_data = lh_avg[fcd_indx,:]
+                    lh_feat = feat_data - avg_data
+
+        
+                if subj and hemi in features[2*i+1]:
+                    print('processing {} data for subj {}'.format(hemi, subj))
+                    feat_data = np.loadtxt(features[2*i+1], dtype=np.float32, comments='#')
+                    mask_data = np.loadtxt(fcd_mask[2*i+1], dtype=np.float32, comments='#')
+
+                    fcd_indx = np.ravel(mask_data == 1)
+                    feat_data = feat_data[fcd_indx,:]
+                    avg_data = rh_avg[fcd_indx,:]
+                    rh_feat = feat_data - avg_data
+                
+            both = []
+            if lh_feat.shape[0] > 0:
+                both.append(lh_feat)
+            if rh_feat.shape[0] > 0:
+                both.append(rh_feat)
+        
+            subj_data = np.vstack(both)
+            print('subj {} data shape is {}'.format(subj, subj_data.shape))
+            subj_mean = subj_data.mean(axis=0)
+   
+            subj_fcd_hat = subj_mean / np.linalg.norm(subj_mean)
+    
+            data.append(subj_fcd_hat)
+            
+        dd = np.vstack([d for d in data])
+        vhat = np.mean(dd,axis=0)
+        vhat /= np.linalg.norm(vhat)
+        
+        joblib.dump(vhat, wdir+'/fcd_detector')
+        
+        return runtime
+    
+         
+    def _list_outputs(self): 
+       import os
+       outputs = self._outputs().get()
+       features = self.inputs.features
+       dset_dir, base, ext = split_filename(features[0])
+       data_dir = os.path.dirname(dset_dir)
+       subj_dir = os.path.dirname(data_dir)
+       wdir = os.path.dirname(subj_dir)+'/model'
+       
+       outputs["fcd_detector"] = os.path.abspath(wdir+'/fcd_detector')
+        
+        
+       return outputs
+
