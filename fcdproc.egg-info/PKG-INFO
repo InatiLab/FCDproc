@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: fcdproc
-Version: 0.1
+Version: 0.post4+g9b5fa2d
 Summary: Python package for FCD lesion detection.
 Home-page: https://github.com/ShervinAbd92/fcdproc
 Author: Inati Lab, NINDS, NIH

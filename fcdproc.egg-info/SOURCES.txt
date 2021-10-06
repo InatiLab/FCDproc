@@ -1,4 +1,5 @@
 README.rst
+setup.cfg
 setup.py
 fcdproc/__about__.py
 fcdproc/__init__.py
@@ -21,7 +22,5 @@ fcdproc/utils/misc.py
 fcdproc/workflow/__init__.py
 fcdproc/workflow/anatomical.py
 fcdproc/workflow/base.py
-fcdproc/workflow/base2.py
-fcdproc/workflow/base3cli.py
 fcdproc/workflow/modeling.py
 fcdproc/workflow/test.py
