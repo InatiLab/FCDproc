@@ -1,18 +1,15 @@
 ===============================
-JEM
+FCDproc
 ===============================
 
-.. image:: https://img.shields.io/travis/InatiLab/jem.svg
-        :target: https://travis-ci.org/InatiLab/jem
-
-.. image:: https://img.shields.io/pypi/v/jem.svg
-        :target: https://pypi.python.org/pypi/jem
+.. image:: https://img.shields.io/pypi/v/fcdproc.svg
+        :target: https://pypi.python.org/pypi/fcdproc
 
 
-Python package for MRI and electrophysiology analysis.
+Python package for detection of focal cortical displasia (FCD) in epilepsy patients.
 
 * Free software: Public Domain
-* Documentation: https://inatilab.github.io/jem.
+* Documentation: https://inatilab.github.io/fcdproc.
 
 Features
 --------

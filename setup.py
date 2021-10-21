@@ -2,7 +2,7 @@ from os import path
 from setuptools import setup, find_packages
 import sys
 import subprocess
-import versioneer
+
 
 
 # NOTE: This file must remain Python 2 compatible for the foreseeable future,
@@ -35,10 +35,16 @@ with open(path.join(here, "requirements.txt")) as requirements_file:
         if not line.startswith("#")
     ]
 
+try:
+    from semantic_release import setup_hook
+    setup_hook(sys.argv)
+except ImportError:
+    pass
 
+__version__='0.1.0'
 setup(
     name="fcdproc",
-    version= versioneer.get_version(),
+    version= __version__,
     description="Python package for FCD lesion detection.",
     long_description=readme,
     author="Inati Lab, NINDS, NIH",

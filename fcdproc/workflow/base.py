@@ -12,7 +12,7 @@ Created on Mon Jan  6 10:45:22 2021
 import os
 #import sys
 from copy import deepcopy
-from fcdproc import config
+
 
 
 
@@ -57,12 +57,8 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, p
     if analysis_mode == 'preprocess':
         for subject_id in subjects:
             print(f"single procesing subject {subject_id}")
-            single_subject_wf = init_single_subject_wf(subject_id, bids_dir, output_dir)
+            single_subject_wf = init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir)
             
-            
-            for node in single_subject_wf._get_all_nodes():
-                node.config = deepcopy(single_subject_wf.config)
-        
             if fs_reconall:
                 fcdproc_wf.connect(fsdir, 'subjects_dir', single_subject_wf, 'inputnode.subjects_dir')
             else:
@@ -74,22 +70,16 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, p
         model_dir = os.path.join(fcdproc_dir+'/model')
         anat_dir = pe.Node(DataFinder(root_paths=fcdproc_dir, max_depth=0),name='anat_dir', run_without_submitting=True)
         
-        
         pca_gauss_detector = pca_gauss_detector_modeling_wf(output_dir=model_dir, controls=controls, pt_pos=pt_positive, pt_neg=pt_negative, omp_nthreads=1)
         
         fcdproc_wf.connect(anat_dir, ('out_paths', convert_list_2_str), pca_gauss_detector, 'inputnode.base_directory')
-                    
-        for node in pca_gauss_detector._get_all_nodes():
-            node.config = deepcopy(pca_gauss_detector.config)
+
             
     if analysis_mode == 'detect':
         
         for subject_id in pt_negative:
             
-            single_subject_wf = init_single_subject_wf(subject_id, bids_dir, output_dir)
-        
-            for node in single_subject_wf._get_all_nodes():
-                node.config = deepcopy(single_subject_wf.config)
+            single_subject_wf = init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir)
         
             if fs_reconall:
                 fcdproc_wf.connect(fsdir, 'subjects_dir', single_subject_wf, 'inputnode.subjects_dir')
@@ -105,7 +95,7 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, p
     
     return fcdproc_wf
 
-def init_single_subject_wf(subject_id, bids_dir, output_dir):
+def init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir):
     
     """
     Organize the preprocessing pipeline for a single subject.
@@ -174,7 +164,7 @@ def init_single_subject_wf(subject_id, bids_dir, output_dir):
     
     
     bids_info = pe.Node(BIDSInfo(
-        bids_dir=config.execution.bids_dir, bids_validate=False), name='bids_info')
+        bids_dir=bids_dir, bids_validate=False), name='bids_info')
     
     
     workflow.connect(bids_src, ('t1w', fix_multi_T1w_source_name), bids_info, 'in_file')
@@ -327,7 +317,7 @@ def init_single_subject_wf(subject_id, bids_dir, output_dir):
         workflow.connect(mask_vol2surf_lh, 'out_file', datasink, 'data.dset.@lh_fcd_mask')
         workflow.connect(mask_vol2surf_rh, 'out_file', datasink, 'data.dset.@rh_fcd_mask')
     
-    workflow.write_graph(graph2use='orig', dotfilename=f'/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc_wf/single_subject_{subject_id}_wf/graph_detailed.dot')#work_dir/graphs
+    workflow.write_graph(graph2use='orig', dotfilename=f'{work_dir}/graphs/graph_{subject_id}_detailed.dot')
     return workflow
 
 
@@ -442,7 +432,7 @@ def apply_fcd_detector_wf(subject):
     pipeline2.connect(select_model, 'avg_lh', apply_fcd_model, 'lh_avg')
     pipeline2.connect(select_model, 'avg_rh', apply_fcd_model, 'rh_avg')
         
-    pipeline2.write_graph(graph2use='orig', dotfilename='/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc_wf/FCD_detector_apply_new_sbj/graph_detailed.dot')
+    pipeline2.write_graph(graph2use="colored", format="svg", simple_form=True)
     return pipeline2
    
 

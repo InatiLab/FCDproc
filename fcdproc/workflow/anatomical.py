@@ -20,8 +20,6 @@ from fcdproc.interfaces import FCD_preproc, FCD_python
 from fcdproc.utils.misc import  annot_niml_dset_filename, colormap_surface_filename, joinpath, split_file_ext, convert_filename
 
 freesurfer_dir = os.environ['SUBJECTS_DIR']
-#bids_dir = '/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc/data/'
-
 
 def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp_nthreads):
     """
@@ -111,7 +109,6 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
     joinpath1 = pe.Node(niu.Function(input_names=['directory', 'file'], output_names=['output'],function=joinpath), name='fs_sub_path')
     joinpath2 = joinpath1.clone(name='fs_label_dir')
     joinpath2.inputs.file = 'label'
-    #joinpath2 = joinpath1.clone(name='fsread_in')
     joinpath3 = joinpath1.clone(name='fsread_out')
     joinpath4 = joinpath1.clone(name='fsread_cmap')
     joinpath4.inputs.directory = helper_dir
@@ -125,7 +122,6 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
     mri_surf2surf = pe.MapNode(interface=SurfaceTransform(), iterfield=['source_annot_file','hemi', 'out_file'], name='mri_s2s')
     mri_surf2surf.inputs.hemi = ['lh', 'rh'] 
     mri_surf2surf.inputs.source_annot_file = [os.path.join(top_dir+'/derivatives/freesurfer/fsaverage/label/lh.lausanne_250.annot'), os.path.join(top_dir+'/derivatives/freesurfer/fsaverage/label/rh.lausanne_250.annot')]
-    #mri_surf2surf.inputs.source_annot_file = ['/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc/derivatives/freesurfer/fsaverage/label/lh.lausanne_250.annot', '/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc/derivatives/freesurfer/fsaverage/label/rh.lausanne_250.annot']
     mri_surf2surf.inputs.source_subject = 'fsaverage'
     mri_surf2surf.inputs.subjects_dir = freesurfer_dir
     joinpath5 = joinpath1.clone(name='mri_surf2surf_dset')
@@ -385,7 +381,7 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
     pipeline.connect(Align2Exp, 'out_file_HEAD', outputnode, 'surfvol_Alnd_HEAD')
     pipeline.connect(Align2Exp, 'out_file_BRIK', outputnode, 'surfvol_Alnd_BRIK')
     
-    pipeline.write_graph(graph2use='orig', dotfilename='/Users/abdollahis2/github/ShervinAbd92/fcdproc/fcdproc_wf/fs_suma/graph_detailed.dot')
+    pipeline.write_graph(graph2use="colored", format="svg", simple_form=True)
     return pipeline 
 
 

@@ -1,34 +1,34 @@
-Metadata-Version: 1.1
+Metadata-Version: 2.1
 Name: fcdproc
-Version: 0.post4+g9b5fa2d
+Version: 0.1.0
 Summary: Python package for FCD lesion detection.
 Home-page: https://github.com/ShervinAbd92/fcdproc
 Author: Inati Lab, NINDS, NIH
 Author-email: shervin.abd71@gmail.com
 License: Public Domain
-Description: ===============================
-        JEM
-        ===============================
-        
-        .. image:: https://img.shields.io/travis/InatiLab/jem.svg
-                :target: https://travis-ci.org/InatiLab/jem
-        
-        .. image:: https://img.shields.io/pypi/v/jem.svg
-                :target: https://pypi.python.org/pypi/jem
-        
-        
-        Python package for MRI and electrophysiology analysis.
-        
-        * Free software: Public Domain
-        * Documentation: https://inatilab.github.io/jem.
-        
-        Features
-        --------
-        
-        * TODO
-        
-        
 Platform: UNKNOWN
 Classifier: Development Status :: 2 - Pre-Alpha
 Classifier: Natural Language :: English
 Classifier: Programming Language :: Python :: 3
+License-File: LICENSE.txt
+
+===============================
+FCDproc
+===============================
+
+.. image:: https://img.shields.io/pypi/v/fcdproc.svg
+        :target: https://pypi.python.org/pypi/fcdproc
+
+
+Python package for detection of focal cortical displasia (FCD) in epilepsy patients.
+
+* Free software: Public Domain
+* Documentation: https://inatilab.github.io/fcdproc.
+
+Features
+--------
+
+* TODO
+
+
+
