@@ -9,7 +9,6 @@ Created on Tue Mar  2 10:20:44 2021
 ################################################## Import Section #############################################
 
 import os
-
 from nipype.interfaces.io import SelectFiles
 import nipype.interfaces.utility as niu
 from niworkflows.engine.workflows import LiterateWorkflow as Workflow
@@ -21,11 +20,8 @@ from fcdproc.interfaces import FCD_preproc, FCD_python
 from fcdproc.utils.misc import  annot_niml_dset_filename, colormap_surface_filename, joinpath, split_file_ext, convert_filename
 
 freesurfer_dir = os.environ['SUBJECTS_DIR']
-bids_dir = '/Users/abdollahis2/Desktop/fcdproc/fcdproc/data/'
-#bids_dir = config.excution.bids_dir
-helper_dir = os.path.join(bids_dir, '__files/')
 
-def subject_fs_suma_wf(*, output_dir, name="fs_suma", freesurfer, omp_nthreads):
+def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp_nthreads):
     """
     Stage the freesurfer and SUMA preprocessing of anatomical dataset
     
@@ -56,6 +52,8 @@ def subject_fs_suma_wf(*, output_dir, name="fs_suma", freesurfer, omp_nthreads):
     ----------
     output_dir : TYPE, optional
         Directory in which to save resullts. The default is fcdproc_dir.
+    input_dir : TYPE, optional
+        Directory to grab the input data. The default is bids_dir.
     name : TYPE, optional
         pipeline name. The default is "fs_suma".
     freesurfer : :obj:`bool`
@@ -93,6 +91,9 @@ def subject_fs_suma_wf(*, output_dir, name="fs_suma", freesurfer, omp_nthreads):
         sel_ctx, curve, sulc, smoothed thickness and wg boundary 1D dset
         
     """
+    import os
+    top_dir = os.path.dirname(input_dir)
+    helper_dir = os.path.join(input_dir, '__files/')
     
     pipeline = Workflow(name=name)
      
@@ -108,7 +109,6 @@ def subject_fs_suma_wf(*, output_dir, name="fs_suma", freesurfer, omp_nthreads):
     joinpath1 = pe.Node(niu.Function(input_names=['directory', 'file'], output_names=['output'],function=joinpath), name='fs_sub_path')
     joinpath2 = joinpath1.clone(name='fs_label_dir')
     joinpath2.inputs.file = 'label'
-    #joinpath2 = joinpath1.clone(name='fsread_in')
     joinpath3 = joinpath1.clone(name='fsread_out')
     joinpath4 = joinpath1.clone(name='fsread_cmap')
     joinpath4.inputs.directory = helper_dir
@@ -121,7 +121,7 @@ def subject_fs_suma_wf(*, output_dir, name="fs_suma", freesurfer, omp_nthreads):
     #resampling cortical surface (this doesnt need to have the out_file inputed, by default it creates a filename:{lh/rh}.lausanne_250.02.annot)- MODIFY LATER
     mri_surf2surf = pe.MapNode(interface=SurfaceTransform(), iterfield=['source_annot_file','hemi', 'out_file'], name='mri_s2s')
     mri_surf2surf.inputs.hemi = ['lh', 'rh'] 
-    mri_surf2surf.inputs.source_annot_file = ['/Users/abdollahis2/Desktop/fcdproc/fcdproc/derivatives/freesurfer/fsaverage/label/lh.lausanne_250.annot', '/Users/abdollahis2/Desktop/fcdproc/fcdproc/derivatives/freesurfer/fsaverage/label/rh.lausanne_250.annot']
+    mri_surf2surf.inputs.source_annot_file = [os.path.join(top_dir+'/derivatives/freesurfer/fsaverage/label/lh.lausanne_250.annot'), os.path.join(top_dir+'/derivatives/freesurfer/fsaverage/label/rh.lausanne_250.annot')]
     mri_surf2surf.inputs.source_subject = 'fsaverage'
     mri_surf2surf.inputs.subjects_dir = freesurfer_dir
     joinpath5 = joinpath1.clone(name='mri_surf2surf_dset')
@@ -380,7 +380,8 @@ def subject_fs_suma_wf(*, output_dir, name="fs_suma", freesurfer, omp_nthreads):
     pipeline.connect(sel_ctx, 'rh_data', outputnode, 'rh_selctx' )
     pipeline.connect(Align2Exp, 'out_file_HEAD', outputnode, 'surfvol_Alnd_HEAD')
     pipeline.connect(Align2Exp, 'out_file_BRIK', outputnode, 'surfvol_Alnd_BRIK')
-     
+    
+    pipeline.write_graph(graph2use="colored", format="svg", simple_form=True)
     return pipeline 
 
 
