@@ -1,11 +1,11 @@
 # fcdproc
 
-Python package for MRI and electrophysiology analysis.
+Python package to detect FCD lesions in MRI negative epilepsy patients
 
 ## Installation
 
 ```bash
-$ pip install jem
+$ pip install fcdproc
 ```
 
 ## Usage
@@ -19,6 +19,6 @@ Interested in contributing? Check out the contributing guidelines. Please note t
 
 ## License
 
-`jem` was created by InatiLab. It is licensed under the terms of the GNU General Public License v3.0 license.
+`fcdproc` was created by InatiLab. It is licensed under the terms of the GNU General Public License v3.0 license.
 
 ## Credits
