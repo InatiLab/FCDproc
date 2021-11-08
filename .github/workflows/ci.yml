@@ -25,7 +25,6 @@ jobs:
         pip install flake8 black wheel twine setuptools
         pip install .
         pip install -r requirements-dev.txt
-    
     - name: runnig some pytest
       run: |
         coverage run -m pytest
