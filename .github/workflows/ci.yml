@@ -31,3 +31,8 @@ jobs:
     
     - name: twine check
       run: twine check dist/*
+    
+    - name: publish distribution to PYPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.PYPI_PASSWORD }}
