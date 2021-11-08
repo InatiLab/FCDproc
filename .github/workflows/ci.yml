@@ -25,4 +25,4 @@ jobs:
         pip install flake8 black wheel twine setuptools
         pip install .
         pip install -r requirements-dev.txt
-        
+    
