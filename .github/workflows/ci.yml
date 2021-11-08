@@ -28,3 +28,6 @@ jobs:
     - name: build a binary wheel & source tarball
       run: |
         python -m build --sdist --wheel --outdir dist/ .
+    
+    - name: twine check
+      run: twine check dist/*
