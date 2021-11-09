@@ -11,3 +11,4 @@ jem
 niworkflows
 requests
 nitransforms
+scikit-image; python_version >= '3.6'
