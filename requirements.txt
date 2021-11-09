@@ -4,4 +4,11 @@ click
 nibabel
 numpy
 scipy
-
+nipype
+fmriprep
+smriprep
+jem
+niworkflows
+requests
+nitransforms
+os
