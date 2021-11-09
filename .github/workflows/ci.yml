@@ -32,9 +32,13 @@ jobs:
     - name: twine check
       run: twine check dist/*
     
-    - name: Python Semantic Release
-      run: |
-          pip install python-semantic-release
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          semantic-release publish
+    - name: python sematic release
+      uses: relekang/python-semantic-release@master
+      env:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        pypi_token: ${{ secrets.PYPI_PASSWORD }}
+      run:
+        pip install python-semantic-release
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        semantic-release publish
