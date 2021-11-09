@@ -31,8 +31,16 @@ jobs:
     
     - name: twine check
       run: twine check dist/*
-      
-    - name: publish distribution to PYPI
-      uses: pypa/gh-action-pypi-publish@master
+  release:
+    runs-on: ubuntu-latest
+    concurrency: release
+    steps:
+    - uses: actions/checkout@v2
       with:
-        password: ${{ secrets.PYPI_PASSWORD }}
+        fetch-depth: 0
+
+    - name: Python Semantic Release
+      uses: relekang/python-semantic-release@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        pypi_token: ${{ secrets.PYPI_PASSWORD }}
