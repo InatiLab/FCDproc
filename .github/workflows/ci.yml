@@ -32,8 +32,17 @@ jobs:
     - name: twine check
       run: twine check dist/*
     
-    - name: python sematic release
-      uses: relekang/python-semantic-release@master
+  release:
+    needs: CI
+    #if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      with:
+        node-version: '12.x' 
+    - run: npm ci 
+    - run: npm run build --if-present
+    - run: npx semantic-release
       env:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         pypi_token: ${{ secrets.PYPI_PASSWORD }}
