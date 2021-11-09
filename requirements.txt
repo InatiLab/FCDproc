@@ -11,4 +11,3 @@ jem
 niworkflows
 requests
 nitransforms
-os
