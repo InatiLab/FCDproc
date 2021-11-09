@@ -34,8 +34,7 @@ jobs:
     
     - name: python semantic release
       run: 
-        npx semantic-release 
-        semantic-release publish
+        npx semantic-release publish
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PYPI_TOKEN : ${{ secrets.PYPI_PASSWORD }}
