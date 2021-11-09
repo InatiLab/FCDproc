@@ -33,11 +33,12 @@ jobs:
       run: twine check dist/*
     
     - name: python semantic release
-      run: |
-        pip install python-semantic-release
-        semantic-release publish
+      run: npx semantic-release 
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PYPI_TOKEN : ${{ secrets.PYPI_PASSWORD }}
     
-    - name: publish distribution to PYPI
-      uses: pypa/gh-action-pypi-publish@master
-      with:
-        password: ${{ secrets.PYPI_PASSWORD }}
+    #- name: publish distribution to PYPI
+    #  uses: pypa/gh-action-pypi-publish@master
+    #  with:
+     #   password: ${{ secrets.PYPI_PASSWORD }}
