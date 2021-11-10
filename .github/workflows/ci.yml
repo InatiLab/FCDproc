@@ -40,7 +40,6 @@ jobs:
         ref : 'main'
     - name: Python Semantic Release
       uses: cycjimmy/semantic-release-action@v2
-      branch : 'main'
       env:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         pypi_token: ${{ secrets.PYPI_PASSWORD }}
