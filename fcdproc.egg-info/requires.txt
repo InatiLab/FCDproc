@@ -2,3 +2,13 @@ click
 nibabel
 numpy
 scipy
+nipype
+fmriprep
+smriprep
+jem
+niworkflows
+requests
+nitransforms
+reports
+dotcli
+matplotlib==3.3.4
