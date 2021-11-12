@@ -39,8 +39,14 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref : 'main'
-    - name: Python Semantic Release
-      uses: relekang/python-semantic-release@master
-      env:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        pypi_token: ${{ secrets.PYPI_PASSWORD }}
+    - name : publish to pypi
+    - uses: pypa/gh-action-pypi-publish@release/v1
+    with:
+      user: ${{ secrets.PYPI_USERNAME }}
+      password: ${{ secrets.PYPI_PASSWORD }}
+      
+    #- name: Python Semantic Release
+    #  uses: relekang/python-semantic-release@master
+    #  env:
+    #    github_token: ${{ secrets.GITHUB_TOKEN }}
+    #    pypi_token: ${{ secrets.PYPI_PASSWORD }}
