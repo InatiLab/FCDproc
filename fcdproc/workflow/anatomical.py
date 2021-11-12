@@ -113,15 +113,13 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
     joinpath4 = joinpath1.clone(name='fsread_cmap')
     joinpath4.inputs.directory = helper_dir
 
-
-
     #run SUMA maske spec
     suma = pe.Node(interface=FCD_preproc.SumaMakeSpecFS(), name='Suma')
 
     #resampling cortical surface (this doesnt need to have the out_file inputed, by default it creates a filename:{lh/rh}.lausanne_250.02.annot)- MODIFY LATER
     mri_surf2surf = pe.MapNode(interface=SurfaceTransform(), iterfield=['source_annot_file','hemi', 'out_file'], name='mri_s2s')
     mri_surf2surf.inputs.hemi = ['lh', 'rh'] 
-    mri_surf2surf.inputs.source_annot_file = [os.path.join(top_dir+'/derivatives/freesurfer/fsaverage/label/lh.lausanne_250.annot'), os.path.join(top_dir+'/derivatives/freesurfer/fsaverage/label/rh.lausanne_250.annot')]
+    mri_surf2surf.inputs.source_annot_file = [os.path.join(helper_dir+'lh.lausanne_250.annot'), os.path.join(helper_dir+'rh.lausanne_250.annot')]
     mri_surf2surf.inputs.source_subject = 'fsaverage'
     mri_surf2surf.inputs.subjects_dir = freesurfer_dir
     joinpath5 = joinpath1.clone(name='mri_surf2surf_dset')

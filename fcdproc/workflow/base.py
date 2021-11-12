@@ -317,7 +317,8 @@ def init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir):
         workflow.connect(mask_vol2surf_lh, 'out_file', datasink, 'data.dset.@lh_fcd_mask')
         workflow.connect(mask_vol2surf_rh, 'out_file', datasink, 'data.dset.@rh_fcd_mask')
     
-    workflow.write_graph(graph2use='orig', dotfilename=f'{work_dir}/graphs/graph_{subject_id}_detailed.dot')
+    workflow.write_graph(graph2use="colored", format="svg", simple_form=True)
+    #workflow.write_graph(graph2use='orig', dotfilename=f'{work_dir}/graphs/graph_{subject_id}_detailed.dot')
     return workflow
 
 
