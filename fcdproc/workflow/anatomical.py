@@ -379,7 +379,7 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
     pipeline.connect(Align2Exp, 'out_file_HEAD', outputnode, 'surfvol_Alnd_HEAD')
     pipeline.connect(Align2Exp, 'out_file_BRIK', outputnode, 'surfvol_Alnd_BRIK')
     
-    pipeline.write_graph(graph2use="colored", format="svg", simple_form=True)
+    #pipeline.write_graph(graph2use="colored", format="svg", simple_form=True)
     return pipeline 
 
 

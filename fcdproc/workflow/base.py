@@ -317,7 +317,7 @@ def init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir):
         workflow.connect(mask_vol2surf_lh, 'out_file', datasink, 'data.dset.@lh_fcd_mask')
         workflow.connect(mask_vol2surf_rh, 'out_file', datasink, 'data.dset.@rh_fcd_mask')
     
-    workflow.write_graph(graph2use="colored", format="svg", simple_form=True)
+    #workflow.write_graph(graph2use="colored", format="svg", simple_form=True)
     #workflow.write_graph(graph2use='orig', dotfilename=f'{work_dir}/graphs/graph_{subject_id}_detailed.dot')
     return workflow
 
@@ -433,7 +433,7 @@ def apply_fcd_detector_wf(subject):
     pipeline2.connect(select_model, 'avg_lh', apply_fcd_model, 'lh_avg')
     pipeline2.connect(select_model, 'avg_rh', apply_fcd_model, 'rh_avg')
         
-    pipeline2.write_graph(graph2use="colored", format="svg", simple_form=True)
+    #pipeline2.write_graph(graph2use="colored", format="svg", simple_form=True)
     return pipeline2
    
 

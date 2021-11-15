@@ -30,14 +30,8 @@ jobs:
         python -m build --sdist --wheel --outdir dist/ .
     - name: twine check
       run: twine check dist/*
-    - name : publish to pypi
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: ${{ secrets.PYPI_USERNAME }}
-        password: ${{ secrets.PYPI_PASSWORD }}
-
-    #- name: Python Semantic Release
-    #  uses: relekang/python-semantic-release@master
-    #  env:
-    #    github_token: ${{ secrets.GITHUB_TOKEN }}
-    #    pypi_token: ${{ secrets.PYPI_PASSWORD }}
+    - name: Python Semantic Release
+      uses: relekang/python-semantic-release@master
+      env:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        pypi_token: ${{ secrets.PYPI_PASSWORD }}
