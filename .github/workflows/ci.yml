@@ -8,7 +8,7 @@ on:
     #types: [published]
 
 jobs:
-  deploy:
+  ci:
 
     runs-on: ubuntu-latest
 
@@ -32,6 +32,9 @@ jobs:
       uses: relekang/python-semantic-release@master
       env:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+    
+  cd:
+    needs: ci
     - name : publish to pypi
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
