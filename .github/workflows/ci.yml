@@ -32,9 +32,10 @@ jobs:
       uses: relekang/python-semantic-release@master
       env:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-    
   cd:
     needs: ci
+    runs-on: ubuntu-latest
+    steps:
     - name : publish to pypi
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
