@@ -19,7 +19,7 @@ from nipype.interfaces.freesurfer import ReconAll, SurfaceTransform, MRIsConvert
 from fcdproc.interfaces import FCD_preproc, FCD_python
 from fcdproc.utils.misc import  annot_niml_dset_filename, colormap_surface_filename, joinpath, split_file_ext, convert_filename
 
-freesurfer_dir = os.environ['SUBJECTS_DIR']
+#freesurfer_dir = os.environ['SUBJECTS_DIR']
 
 def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp_nthreads):
     """
@@ -101,7 +101,7 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
 
     
     reconall = pe.Node(interface=ReconAll(),name="reconall")
-    reconall.inputs.subjects_dir = freesurfer_dir
+    #reconall.inputs.subjects_dir = freesurfer_dir
     reconall.inputs.use_T2 = True
     reconall.inputs.directive = 'all'
 
@@ -121,7 +121,7 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
     mri_surf2surf.inputs.hemi = ['lh', 'rh'] 
     mri_surf2surf.inputs.source_annot_file = [os.path.join(helper_dir+'lh.lausanne_250.annot'), os.path.join(helper_dir+'rh.lausanne_250.annot')]
     mri_surf2surf.inputs.source_subject = 'fsaverage'
-    mri_surf2surf.inputs.subjects_dir = freesurfer_dir
+    #mri_surf2surf.inputs.subjects_dir = freesurfer_dir
     joinpath5 = joinpath1.clone(name='mri_surf2surf_dset')
     joinpath5.inputs.file = [os.path.basename(i) for i in mri_surf2surf.inputs.source_annot_file]
     
@@ -155,18 +155,18 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
                          white = "{subject_id}/surf/??.white")
     
     
-    surf_sf = pe.Node(interface=SelectFiles(surf_template, base_directory=freesurfer_dir, force_lists=True), name='surf_select')
+    surf_sf = pe.Node(interface=SelectFiles(surf_template, force_lists=True), name='surf_select')
     
     #thickness_smoothing
     thickness_smooth = pe.MapNode(interface=FCD_preproc.SurfaceSmooth(), iterfield=['hemi', 'in_file'], name='thinckness_fwhm')
     thickness_smooth.inputs.hemi = ['lh', 'rh']
-    thickness_smooth.inputs.subjects_dir = freesurfer_dir
+    #thickness_smooth.inputs.subjects_dir = freesurfer_dir
     thickness_smooth.inputs.surface = 'thickness'
     
     #w-g.pct smoothing
     wg_pct_smooth = pe.MapNode(interface=FCD_preproc.SurfaceSmooth(), iterfield=['hemi', 'in_file'], name='wg_pct_fwhm')
     wg_pct_smooth.inputs.hemi = ['lh', 'rh']
-    wg_pct_smooth.inputs.subjects_dir = freesurfer_dir
+    #wg_pct_smooth.inputs.subjects_dir = freesurfer_dir
     wg_pct_smooth.inputs.surface = 'w-g.pct'
     
     #mris_convert for (thickness.fwhm5, w-g.pct, w-g.pct.fwhm5)
@@ -229,6 +229,7 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
     
     
     pipeline.connect(inputnode, 'subject_id', reconall, 'subject_id')
+    pipeline.connect(inputnode, 'subjects_dir', reconall, 'subjects_dir')
     pipeline.connect(inputnode, 't1w', reconall, 'T1_files')
     pipeline.connect(inputnode, 't2w', reconall, 'T2_file')
     
@@ -240,6 +241,7 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
     
     #mri_surf2surf
     pipeline.connect(reconall, 'subject_id', mri_surf2surf, 'target_subject') 
+    pipeline.connect(inputnode, 'subjects_dir', mri_surf2surf, 'subjects_dir')
     pipeline.connect(joinpath1, 'output', joinpath2, 'directory')
     pipeline.connect(joinpath2, 'output', joinpath5, 'directory')
     pipeline.connect(joinpath5, 'output', mri_surf2surf, 'out_file')
@@ -277,13 +279,16 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
     
     #surf_select 
     pipeline.connect(reconall, 'subject_id', surf_sf, 'subject_id')
-    
+    pipeline.connect(inputnode, 'subjects_dir', surf_sf, 'base_directory')
+
     #mris_fwhm
     pipeline.connect(reconall, 'subject_id', thickness_smooth, 'subject_id')
     pipeline.connect(surf_sf, 'thickness', thickness_smooth, 'in_file')
-    
+    pipeline.connect(inputnode, 'subjects_dir',thickness_smooth, 'subjects_dir')
+
     pipeline.connect(reconall, 'subject_id', wg_pct_smooth, 'subject_id')
     pipeline.connect(surf_sf, 'wg_pct', wg_pct_smooth, 'in_file')
+    pipeline.connect(inputnode, 'subjects_dir',wg_pct_smooth, 'subjects_dir')
     
     #mris_convert
     #w-g.pct

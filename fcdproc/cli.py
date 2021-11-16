@@ -25,8 +25,8 @@ class PythonLiteralOption(click.Option):
 @click.option('--pt_positive', cls=PythonLiteralOption, default=[], help='list of patients with known fcd lesions')
 @click.option('--pt_negative', cls=PythonLiteralOption, default=[], help='list of patients with MRI negative fcd lesions')
 @click.option('--fs_reconall/--fs_no_reconall', default=False, help='option to run freesurfer reconstruction')
-@click.option('--fs_subjects_dir', type=click.STRING , help='freesurfer subject directory')
-@click.option('--fs_license_file', type=click.STRING , help='freesurfer license key file location')
+@click.option('--fs_subjects_dir', type=click.STRING , is_flag=False, default="None", help='path to existing subjects directory to reuse (default: OUTPUT_DIR/freesurfer')
+@click.option('--fs_license_file', type=click.STRING , help='path to Freesurfer licencse key file')
 @click.option('--output_dir', type=click.STRING , help='output data directory',required=True)
 @click.option('--bids_dir', type=click.STRING , help='input data directory', required=True)
 

@@ -35,21 +35,32 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, p
     fcdproc_wf = pe.Workflow(name='fcdproc_wf')
     fcdproc_wf.base_dir = work_dir
     fcdproc_dir = os.path.join(output_dir+'/fcdproc/')
+    if not os.path.exists(fcdproc_dir):
+        os.makedirs(fcdproc_dir)
 
 
     if fs_reconall == True:
         print('running reconall')
+
         fsdir = pe.Node(
             BIDSFreeSurferDir(
                 derivatives=output_dir,
                 freesurfer_home=os.getenv('FREESURFER_HOME'),
                 spaces= ['fsnative']),
             name='fsdir', 
-            run_without_submitting=True)
-                
-        fsdir.inputs.subjects_dir = os.path.join(output_dir+'/freesurfer')
-
- 
+            run_without_submitting=True)        
+        
+        if fs_subjects_dir is not None:
+            fsdir.inputs.subjects_dir = fs_subjects_dir
+    elif fs_reconall == False:
+        if fs_subjects_dir is None:
+            subjects_dir = os.path.join(output_dir+'/freesurfer/')
+            if not os.path.exists(subjects_dir):
+                os.makedirs(subjects_dir)
+        else: 
+            subjects_dir = fs_subjects_dir
+    
+    
     subjects = controls + pt_positive + pt_negative
  
     anat_dir = pe.Node(DataFinder(root_paths=fcdproc_dir, max_depth=0),name='anat_dir', run_without_submitting=True)
@@ -62,7 +73,8 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, p
             if fs_reconall:
                 fcdproc_wf.connect(fsdir, 'subjects_dir', single_subject_wf, 'inputnode.subjects_dir')
             else:
-                fcdproc_wf.add_nodes([single_subject_wf])
+                single_subject_wf.inputs.inputnode.subjects_dir = subjects_dir
+ 
     
     
     if analysis_mode == 'model':
@@ -84,7 +96,7 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, p
             if fs_reconall:
                 fcdproc_wf.connect(fsdir, 'subjects_dir', single_subject_wf, 'inputnode.subjects_dir')
             else:
-                fcdproc_wf.add_nodes([single_subject_wf])
+                single_subject_wf.inputs.inputnode.subjects_dir = subjects_dir
                 
         #getting ready for fcd detector apply       
         anat_direcotry = anat_dir.clone(name='anatomical_dir')
