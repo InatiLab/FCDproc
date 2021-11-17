@@ -53,18 +53,17 @@ setup(
     packages=find_packages(),
     entry_points={
         "console_scripts": [
-            # 'some.module:some_function',
             "Create_FCD_Pipeline=fcdproc.cli:Create_FCD_Pipeline"
         ]
     },
 
     include_package_data=True,
+    package_dir={'fcdproc': 'fcdproc'},
     package_data={
-        "fcdproc": [
-            # When adding files here, remember to update MANIFEST.in as well,
-            # or else they will not be included in the distribution on PyPI!
-            # 'path/to/data_file',
-        ]
+        'fcdproc': ['data/__files/*.annot',
+                    'data/__files/*.txt',
+                    'data/__files/*.nii',
+                ]
     },
     install_requires=requirements,
     license="Public Domain",
@@ -74,7 +73,4 @@ setup(
         "Programming Language :: Python :: 3",
     ],
 )
-#entry_point='''
-#    [console_script]
-#    hello=hello:cli
-#'''
+

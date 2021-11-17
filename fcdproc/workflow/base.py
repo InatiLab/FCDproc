@@ -50,13 +50,11 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, p
             name='fsdir', 
             run_without_submitting=True)        
         
-        if fs_subjects_dir is not None:
+        if fs_subjects_dir != "freesurfer":
             fsdir.inputs.subjects_dir = fs_subjects_dir
     elif fs_reconall == False:
-        if fs_subjects_dir is None:
+        if fs_subjects_dir ==  "freesurfer":
             subjects_dir = os.path.join(output_dir+'/freesurfer/')
-            if not os.path.exists(subjects_dir):
-                os.makedirs(subjects_dir)
         else: 
             subjects_dir = fs_subjects_dir
     
@@ -73,10 +71,8 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, p
             if fs_reconall:
                 fcdproc_wf.connect(fsdir, 'subjects_dir', single_subject_wf, 'inputnode.subjects_dir')
             else:
-                single_subject_wf.inputs.inputnode.subjects_dir = subjects_dir
- 
-    
-    
+                fcdproc_wf.add_nodes([single_subject_wf])
+                
     if analysis_mode == 'model':
         
         model_dir = os.path.join(fcdproc_dir+'/model')
@@ -96,8 +92,8 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, p
             if fs_reconall:
                 fcdproc_wf.connect(fsdir, 'subjects_dir', single_subject_wf, 'inputnode.subjects_dir')
             else:
-                single_subject_wf.inputs.inputnode.subjects_dir = subjects_dir
-                
+                fcdproc_wf.add_nodes([single_subject_wf])
+                            
         #getting ready for fcd detector apply       
         anat_direcotry = anat_dir.clone(name='anatomical_dir')
         
@@ -293,8 +289,6 @@ def init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir):
     datasink = pe.Node(DataSink(), name='suma_sink')
     datasink.inputs.base_directory = fcdproc_dir
     datasink.inputs.parameterization = False
-    #datasink = pe.Node(DataSink(base_directory=experiment_dir,container=output_dir),name="datasink")
-    #datasink.inputs.container = '.'
 
     #data 
     workflow.connect(fs_suma, 'outputnode.subject_id', datasink, 'container')
@@ -310,7 +304,7 @@ def init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir):
     workflow.connect(fs_suma, 'outputnode.aparc_annot', datasink, 'data.@apartannot') 
     workflow.connect(fs_suma, 'outputnode.spec', datasink, 'data.@spec')
     workflow.connect(fs_suma, 'outputnode.smoothwm', datasink, 'data.@smoothwm')
-    #workflow.connect(feature, 'out_file', datasink, 'data.@features' )
+    
     #dset
     workflow.connect(fs_suma, 'outputnode.curv', datasink, 'data.dset')
     workflow.connect(fs_suma, 'outputnode.sulc', datasink, 'data.dset.@sulc')
@@ -328,9 +322,7 @@ def init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir):
     if mask_data:
         workflow.connect(mask_vol2surf_lh, 'out_file', datasink, 'data.dset.@lh_fcd_mask')
         workflow.connect(mask_vol2surf_rh, 'out_file', datasink, 'data.dset.@rh_fcd_mask')
-    
-    #workflow.write_graph(graph2use="colored", format="svg", simple_form=True)
-    #workflow.write_graph(graph2use='orig', dotfilename=f'{work_dir}/graphs/graph_{subject_id}_detailed.dot')
+ 
     return workflow
 
 
@@ -445,14 +437,11 @@ def apply_fcd_detector_wf(subject):
     pipeline2.connect(select_model, 'avg_lh', apply_fcd_model, 'lh_avg')
     pipeline2.connect(select_model, 'avg_rh', apply_fcd_model, 'rh_avg')
         
-    #pipeline2.write_graph(graph2use="colored", format="svg", simple_form=True)
+
     return pipeline2
    
 
-#if __name__=='__main__':
-    
- #   preproc_wf = Main_FCD_pipeline()
-#    preproc_wf.run(plugin='Linear')
+
 
 
     

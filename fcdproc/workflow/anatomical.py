@@ -19,7 +19,7 @@ from nipype.interfaces.freesurfer import ReconAll, SurfaceTransform, MRIsConvert
 from fcdproc.interfaces import FCD_preproc, FCD_python
 from fcdproc.utils.misc import  annot_niml_dset_filename, colormap_surface_filename, joinpath, split_file_ext, convert_filename
 
-#freesurfer_dir = os.environ['SUBJECTS_DIR']
+
 
 def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp_nthreads):
     """
@@ -121,7 +121,6 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
     mri_surf2surf.inputs.hemi = ['lh', 'rh'] 
     mri_surf2surf.inputs.source_annot_file = [os.path.join(helper_dir+'lh.lausanne_250.annot'), os.path.join(helper_dir+'rh.lausanne_250.annot')]
     mri_surf2surf.inputs.source_subject = 'fsaverage'
-    #mri_surf2surf.inputs.subjects_dir = freesurfer_dir
     joinpath5 = joinpath1.clone(name='mri_surf2surf_dset')
     joinpath5.inputs.file = [os.path.basename(i) for i in mri_surf2surf.inputs.source_annot_file]
     
@@ -160,13 +159,11 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
     #thickness_smoothing
     thickness_smooth = pe.MapNode(interface=FCD_preproc.SurfaceSmooth(), iterfield=['hemi', 'in_file'], name='thinckness_fwhm')
     thickness_smooth.inputs.hemi = ['lh', 'rh']
-    #thickness_smooth.inputs.subjects_dir = freesurfer_dir
     thickness_smooth.inputs.surface = 'thickness'
     
     #w-g.pct smoothing
     wg_pct_smooth = pe.MapNode(interface=FCD_preproc.SurfaceSmooth(), iterfield=['hemi', 'in_file'], name='wg_pct_fwhm')
     wg_pct_smooth.inputs.hemi = ['lh', 'rh']
-    #wg_pct_smooth.inputs.subjects_dir = freesurfer_dir
     wg_pct_smooth.inputs.surface = 'w-g.pct'
     
     #mris_convert for (thickness.fwhm5, w-g.pct, w-g.pct.fwhm5)

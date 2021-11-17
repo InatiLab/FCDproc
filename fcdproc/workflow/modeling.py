@@ -159,8 +159,6 @@ def pca_gauss_detector_modeling_wf(*, output_dir, controls, pt_pos, pt_neg, name
     pipeline.connect(control_avg, 'rh_avg', outputnode, 'avg_rh')
     pipeline.connect(fcd_detector, 'fcd_detector', outputnode, 'fcd_detector')
     
-
-    #pipeline.write_graph(graph2use="colored", format="svg", simple_form=True)
     
     return pipeline
 

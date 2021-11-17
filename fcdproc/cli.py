@@ -25,7 +25,7 @@ class PythonLiteralOption(click.Option):
 @click.option('--pt_positive', cls=PythonLiteralOption, default=[], help='list of patients with known fcd lesions')
 @click.option('--pt_negative', cls=PythonLiteralOption, default=[], help='list of patients with MRI negative fcd lesions')
 @click.option('--fs_reconall/--fs_no_reconall', default=False, help='option to run freesurfer reconstruction')
-@click.option('--fs_subjects_dir', type=click.STRING , is_flag=False, default="None", help='path to existing subjects directory to reuse (default: OUTPUT_DIR/freesurfer')
+@click.option('--fs_subjects_dir', type=click.STRING , is_flag=False, default="freesurfer", help='path to existing subjects directory to reuse (default: OUTPUT_DIR/freesurfer')
 @click.option('--fs_license_file', type=click.STRING , help='path to Freesurfer licencse key file')
 @click.option('--output_dir', type=click.STRING , help='output data directory',required=True)
 @click.option('--bids_dir', type=click.STRING , help='input data directory', required=True)
@@ -34,6 +34,8 @@ def Create_FCD_Pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls,
     """ create fcd pipeline that can perform sinlge subject processing, modeling and detecting of FCD lesion"""
     
     click.echo(f"performing {analysis_mode} analysis")
+    click.echo(f"subject's freesurfer directory is {fs_subjects_dir} ")
+    click.echo(f"command to run freesurfer is {fs_reconall} ")
     pipeline = Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir)
     pipeline.run(plugin='Linear')
 
