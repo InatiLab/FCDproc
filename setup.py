@@ -58,7 +58,6 @@ setup(
     },
 
     include_package_data=True,
-    package_dir={'fcdproc': 'fcdproc'},
     package_data={
         'fcdproc': ['data/__files/*.annot',
                     'data/__files/*.txt',
@@ -74,3 +73,4 @@ setup(
     ],
 )
 
+#package_dir={'fcdproc': 'fcdproc'},
