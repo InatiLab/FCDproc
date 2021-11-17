@@ -34,8 +34,6 @@ def Create_FCD_Pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls,
     """ create fcd pipeline that can perform sinlge subject processing, modeling and detecting of FCD lesion"""
     
     click.echo(f"performing {analysis_mode} analysis")
-    click.echo(f"subject's freesurfer directory is {fs_subjects_dir} ")
-    click.echo(f"command to run freesurfer is {fs_reconall} ")
     pipeline = Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir)
     pipeline.run(plugin='Linear')
 
