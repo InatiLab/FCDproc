@@ -73,4 +73,3 @@ setup(
     ],
 )
 
-#package_dir={'fcdproc': 'fcdproc'},
