@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.4 (2021-11-18)
+### Fix
+* Removed the spacing ([`0fa6092`](https://github.com/ShervinAbd92/fcdproc/commit/0fa6092324cda9acf7893a1f4a5907d9c8dd2996))
+
 ## v0.0.3 (2021-11-18)
 ### Fix
 * Removed the empty line in workflow ([`4bb13f9`](https://github.com/ShervinAbd92/fcdproc/commit/4bb13f926aaf8875c2c051cde2a79d67c5afa82e))
