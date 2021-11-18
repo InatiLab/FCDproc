@@ -58,12 +58,6 @@ setup(
     },
 
     include_package_data=True,
-    package_data={
-        'fcdproc': ['data/__files/*.annot',
-                    'data/__files/*.txt',
-                    'data/__files/*.nii',
-                ]
-    },
     install_requires=requirements,
     license="Public Domain",
     classifiers=[
