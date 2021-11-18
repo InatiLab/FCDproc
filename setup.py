@@ -56,7 +56,6 @@ setup(
             "Create_FCD_Pipeline=fcdproc.cli:Create_FCD_Pipeline"
         ]
     },
-
     include_package_data=True,
     install_requires=requirements,
     license="Public Domain",
