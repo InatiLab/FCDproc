@@ -13,6 +13,6 @@ recursive-exclude * *.py[co]
 recursive-include docs *.rst conf.py Makefile make.bat
 
 # If including data files in the package, add them like:
-include data/__files/*.txt
-include data/__files/*.annot
-include data/__files/*.nii
+include fcdproc/data/__files/*.txt
+include fcdproc/data/__files/*.annot
+include fcdproc/data/__files/*.nii
