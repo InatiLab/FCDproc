@@ -276,8 +276,8 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
     
     #surf_select 
     pipeline.connect(reconall, 'subject_id', surf_sf, 'subject_id')
-    pipeline.connect(inputnode, 'subjects_dir', surf_sf, 'base_directory')
-
+    pipeline.connect(reconall, 'subjects_dir', surf_sf, 'base_directory')
+   
     #mris_fwhm
     pipeline.connect(reconall, 'subject_id', thickness_smooth, 'subject_id')
     pipeline.connect(surf_sf, 'thickness', thickness_smooth, 'in_file')
