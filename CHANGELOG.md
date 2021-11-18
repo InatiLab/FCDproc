@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.5 (2021-11-18)
+### Fix
+* Removed spacing in manifest.in file ([`288d76d`](https://github.com/ShervinAbd92/fcdproc/commit/288d76da736a8528357b535bc12864a4c755bab4))
+
 ## v0.0.4 (2021-11-18)
 ### Fix
 * Removed the spacing ([`0fa6092`](https://github.com/ShervinAbd92/fcdproc/commit/0fa6092324cda9acf7893a1f4a5907d9c8dd2996))
