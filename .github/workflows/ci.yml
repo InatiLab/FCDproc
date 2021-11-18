@@ -32,7 +32,7 @@ jobs:
       uses: relekang/python-semantic-release@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}  
-        pypi_token: ${{ secrets.PYPI_TOKEN }} 
+        pypi_token: ${{ secrets.PYPI_PASSWORD }}
     #- name : publish to pypi
     #  uses: pypa/gh-action-pypi-publish@release/v1
     #  with:
