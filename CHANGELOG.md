@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.8 (2021-11-19)
+### Fix
+* Changed some options for fs_no_reconall ([`d3a1224`](https://github.com/ShervinAbd92/fcdproc/commit/d3a12246873e48de00877069eef4c41fb5120e9c))
+
 ## v0.0.5 (2021-11-18)
 ### Fix
 * Removed spacing in manifest.in file ([`288d76d`](https://github.com/ShervinAbd92/fcdproc/commit/288d76da736a8528357b535bc12864a4c755bab4))
