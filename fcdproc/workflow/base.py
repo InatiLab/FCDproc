@@ -52,11 +52,11 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, p
         
         if fs_subjects_dir != "freesurfer":
             fsdir.inputs.subjects_dir = fs_subjects_dir
-    elif fs_reconall == False:
-        if fs_subjects_dir ==  "freesurfer":
-            subjects_dir = os.path.join(output_dir+'/freesurfer/')
-        else: 
-            subjects_dir = fs_subjects_dir
+    #else:
+    #    if fs_subjects_dir ==  "freesurfer":
+    #        subjects_dir = os.path.join(output_dir+'/freesurfer/')
+    #    else: 
+    #        subjects_dir = fs_subjects_dir
     
     
     subjects = controls + pt_positive + pt_negative
@@ -163,7 +163,8 @@ def init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir):
     
     bids_src = pe.Node(BIDSDataGrabber(anat_only=True, 
                                        subject_data=subject_data,
-                                       subject_id=subject_id),
+                                       subject_id=subject_id
+                                       ),
                        name="bidssrc")
     
     if mask_data:

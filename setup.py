@@ -41,7 +41,7 @@ try:
 except ImportError:
     pass
 
-__version__='0.0.6'
+__version__='0.0.7'
 setup(
     name="fcdproc",
     version= __version__,
@@ -57,6 +57,9 @@ setup(
         ]
     },
     include_package_data=True,
+    package_data={
+        'fcdproc': ['data/__files/*.annot', 'data/__files/*.txt', 'data/__files/TT_N27.nii']
+    },
     install_requires=requirements,
     license="Public Domain",
     classifiers=[
