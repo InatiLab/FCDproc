@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.12 (2021-11-23)
+### Fix
+* Changed run plugin to handle parallel run ([`5a7a0af`](https://github.com/ShervinAbd92/fcdproc/commit/5a7a0af26408da5f28437392ff53268f815d95b6))
+
 ## v0.0.8 (2021-11-19)
 ### Fix
 * Changed some options for fs_no_reconall ([`d3a1224`](https://github.com/ShervinAbd92/fcdproc/commit/d3a12246873e48de00877069eef4c41fb5120e9c))
