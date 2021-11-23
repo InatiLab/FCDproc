@@ -92,7 +92,6 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
         
     """
     import os
-    top_dir = os.path.dirname(input_dir)
     helper_dir = os.path.join(input_dir, '__files/')
     
     pipeline = Workflow(name=name)
@@ -238,7 +237,7 @@ def subject_fs_suma_wf(*, output_dir, input_dir, name="fs_suma", freesurfer, omp
     
     #mri_surf2surf
     pipeline.connect(reconall, 'subject_id', mri_surf2surf, 'target_subject') 
-    pipeline.connect(inputnode, 'subjects_dir', mri_surf2surf, 'subjects_dir')
+    pipeline.connect(reconall, 'subjects_dir', mri_surf2surf, 'subjects_dir')
     pipeline.connect(joinpath1, 'output', joinpath2, 'directory')
     pipeline.connect(joinpath2, 'output', joinpath5, 'directory')
     pipeline.connect(joinpath5, 'output', mri_surf2surf, 'out_file')

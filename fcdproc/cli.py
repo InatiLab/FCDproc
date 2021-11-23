@@ -35,6 +35,7 @@ def Create_FCD_Pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls,
     
     click.echo(f"performing {analysis_mode} analysis")
     pipeline = Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir)
-    pipeline.run(plugin='Linear')
+    pipeline.run(plugin='MultiProc')
+    #plugin_args={'maxtaskperchild': 1,'raise_insufficient': False, 'updatehash': True, 'n_procs': 8,'memory_gb': 32})
 
     
