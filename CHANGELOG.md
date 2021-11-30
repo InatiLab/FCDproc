@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.14 (2021-11-30)
+### Fix
+* Modified the cli to work with single subject analysis ([`7832e6d`](https://github.com/ShervinAbd92/fcdproc/commit/7832e6d66f322d8bd9310b58265b0f52c419b670))
+
 ## v0.0.12 (2021-11-23)
 ### Fix
 * Changed run plugin to handle parallel run ([`5a7a0af`](https://github.com/ShervinAbd92/fcdproc/commit/5a7a0af26408da5f28437392ff53268f815d95b6))
