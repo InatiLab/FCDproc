@@ -16,7 +16,7 @@ from copy import deepcopy
 
 
 
-def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir):
+def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant_label, controls , pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir):
     '''
     Build *FCDproc* pipeline
     
@@ -50,15 +50,12 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, controls, p
     if fs_subjects_dir != "freesurfer":
         fsdir.inputs.subjects_dir = fs_subjects_dir
 
-    subjects = controls + pt_positive + pt_negative
-
     anat_dir = pe.Node(DataFinder(root_paths=fcdproc_dir, max_depth=0),name='anat_dir', run_without_submitting=True)
         
     if analysis_mode == 'preprocess':
-        for subject_id in subjects:
-            print(f"single procesing subject {subject_id}")
-            single_subject_wf = init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir)
-            fcdproc_wf.connect(fsdir, 'subjects_dir', single_subject_wf, 'inputnode.subjects_dir')
+        print(f"single procesing subject {participant_label}")
+        single_subject_wf = init_single_subject_wf(participant_label, bids_dir, output_dir, work_dir)
+        fcdproc_wf.connect(fsdir, 'subjects_dir', single_subject_wf, 'inputnode.subjects_dir')
 
                 
     if analysis_mode == 'model':

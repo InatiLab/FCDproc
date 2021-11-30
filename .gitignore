@@ -1,6 +1,12 @@
 fcdproc_wf
 fcdproc/derivatives
 fcdproc.egg-info
+fcdproc/data/dataset_description.json
+fcdproc/data/participants.tsv
+fcdproc/data/sub-540/
+fcdproc/data/sub-550/
+fcdproc/data/sub-560/
+fcdproc/data/README
 #python and Ipython Notebooks
 __pycache__
 .ipynb_checkpoints
