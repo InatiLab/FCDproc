@@ -8,7 +8,8 @@ import sys
 from copy import deepcopy
 import numpy as  np
 from fcdproc.workflow.base import Main_FCD_pipeline
-
+import warnings
+warnings.filterwarnings("ignore", message="Setting 'extension_initial_dot' will be removed in pybids 0.16.")
 
 class PythonLiteralOption(click.Option):
 
@@ -33,7 +34,7 @@ class PythonLiteralOption(click.Option):
 @click.option('--bids_dir', type=click.STRING , help='input data directory', required=True)
 
 def Create_FCD_Pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant_label, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir):
-    """ create fcd pipeline that can perform sinlge subject processing, modeling and detecting of FCD lesion"""
+    """ Create fcd pipeline that can perform single subject processing, modeling and detecting of FCD lesion"""
     
     click.echo(f"performing {analysis_mode} analysis")
     #pylint: disable=too-many-arguments
