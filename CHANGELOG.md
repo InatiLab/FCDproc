@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.16 (2021-12-09)
+### Fix
+* Changed the detect mode to just detection rather than combination of preprocess and detect ([`514e1d5`](https://github.com/ShervinAbd92/fcdproc/commit/514e1d5dcd0d496f6a9f0faf1d57f7336da83467))
+
 ## v0.0.14 (2021-11-30)
 ### Fix
 * Modified the cli to work with single subject analysis ([`7832e6d`](https://github.com/ShervinAbd92/fcdproc/commit/7832e6d66f322d8bd9310b58265b0f52c419b670))
