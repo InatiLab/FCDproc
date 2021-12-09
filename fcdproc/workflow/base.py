@@ -49,17 +49,18 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant
         
     if fs_subjects_dir != "freesurfer":
         fsdir.inputs.subjects_dir = fs_subjects_dir
-
-    anat_dir = pe.Node(DataFinder(root_paths=fcdproc_dir, max_depth=0),name='anat_dir', run_without_submitting=True)
-        
+    
+    anat_dir = pe.Node(DataFinder(root_paths=fcdproc_dir, max_depth=0),name='anat_dir', run_without_submitting=True)   
+    
     if analysis_mode == 'preprocess':
         print(f"single procesing subject {participant_label}")
         single_subject_wf = init_single_subject_wf(participant_label, bids_dir, output_dir, work_dir)
         fcdproc_wf.connect(fsdir, 'subjects_dir', single_subject_wf, 'inputnode.subjects_dir')
 
-                
+            
     if analysis_mode == 'model':
-        
+        print(f"performing PCA-reduction, Gaussianization and FCD-detector modeling on your dataset")
+
         model_dir = os.path.join(fcdproc_dir+'/model')
         anat_dir = pe.Node(DataFinder(root_paths=fcdproc_dir, max_depth=0),name='anat_dir', run_without_submitting=True)
         
@@ -69,19 +70,13 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant
 
             
     if analysis_mode == 'detect':
-        
-        for subject_id in pt_negative:
-            
-            single_subject_wf = init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir)
-            fcdproc_wf.connect(fsdir, 'subjects_dir', single_subject_wf, 'inputnode.subjects_dir')
-
-                            
-        #getting ready for fcd detector apply       
-        anat_direcotry = anat_dir.clone(name='anatomical_dir')
+     
+        print(f"detecting possible FCD lesion for subject list  {pt_negative}")
+        anat_directory = anat_dir.clone(name='anatomical_dir')
         
         detector_apply = apply_fcd_detector_wf(subject=pt_negative)
             
-        fcdproc_wf.connect(anat_direcotry, ('out_paths', convert_list_2_str), detector_apply, 'inputnode.base_directory')   
+        fcdproc_wf.connect(anat_directory, ('out_paths', convert_list_2_str), detector_apply, 'inputnode.base_directory')   
     
     return fcdproc_wf
 

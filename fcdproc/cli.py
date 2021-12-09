@@ -9,6 +9,7 @@ from copy import deepcopy
 import numpy as  np
 from fcdproc.workflow.base import Main_FCD_pipeline
 
+
 class PythonLiteralOption(click.Option):
 
     def type_cast_value(self, ctx, value):
@@ -38,7 +39,4 @@ def Create_FCD_Pipeline(bids_dir, output_dir, work_dir, analysis_mode, participa
     #pylint: disable=too-many-arguments
     pipeline = Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant_label, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir)
     pipeline.run()
-    #pipeline.run(plugin='MultiProc')
-    #plugin_args={'maxtaskperchild': 1,'raise_insufficient': False, 'updatehash': True, 'n_procs': 8,'memory_gb': 32})
-
     
