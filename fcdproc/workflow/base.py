@@ -10,13 +10,11 @@ Created on Mon Jan  6 10:45:22 2021
 #############################################  Import Section #############################################
 
 import os
-#import sys
 from copy import deepcopy
+from fcdproc.utils.colors import Colors
 
 
-
-
-def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant_label, controls , pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir):
+def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant_label, controls , pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir, clean_workdir):
     '''
     Build *FCDproc* pipeline
     
@@ -38,7 +36,6 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant
     if not os.path.exists(fcdproc_dir):
         os.makedirs(fcdproc_dir)
 
-    
     fsdir = pe.Node(
         BIDSFreeSurferDir(
             derivatives=output_dir,
@@ -53,13 +50,13 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant
     anat_dir = pe.Node(DataFinder(root_paths=fcdproc_dir, max_depth=0),name='anat_dir', run_without_submitting=True)   
     
     if analysis_mode == 'preprocess':
-        print(f"single procesing subject {participant_label}")
+        print(Colors.PURPLE, f"single processing subject {participant_label}", Colors.END)
         single_subject_wf = init_single_subject_wf(participant_label, bids_dir, output_dir, work_dir)
         fcdproc_wf.connect(fsdir, 'subjects_dir', single_subject_wf, 'inputnode.subjects_dir')
 
             
     if analysis_mode == 'model':
-        print(f"performing PCA-reduction, Gaussianization and FCD-detector modeling on your dataset")
+        print(Colors.PURPLE, f"performing PCA-reduction, Gaussianization and FCD-detector modeling on your dataset", Colors.END)
 
         model_dir = os.path.join(fcdproc_dir+'/model')
         anat_dir = pe.Node(DataFinder(root_paths=fcdproc_dir, max_depth=0),name='anat_dir', run_without_submitting=True)
@@ -71,13 +68,20 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant
             
     if analysis_mode == 'detect':
      
-        print(f"detecting possible FCD lesion for subject list  {pt_negative}")
+        print(Colors.PURPLE, f"detecting possible FCD lesion for subject list  {pt_negative}", Colors.END)
         anat_directory = anat_dir.clone(name='anatomical_dir')
         
         detector_apply = apply_fcd_detector_wf(subject=pt_negative)
             
         fcdproc_wf.connect(anat_directory, ('out_paths', convert_list_2_str), detector_apply, 'inputnode.base_directory')   
     
+    if clean_workdir:
+        from niworkflows.utils.misc import clean_directory
+        if clean_directory(os.path.join(work_dir+'fcdproc_wf')):
+        
+            print(Colors.RED, f"will remove working directory to save some space on your system", Colors.END)
+
+
     return fcdproc_wf
 
 def init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir):
@@ -121,6 +125,8 @@ def init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir):
     from smriprep.workflows.anatomical import init_anat_preproc_wf
     from niworkflows.utils.misc import fix_multi_T1w_source_name
     from fmriprep.workflows.bold.resampling import init_bold_surf_wf
+    import warnings
+    warnings.filterwarnings("ignore", message="Setting 'extension_initial_dot' will be removed in pybids 0.16.")
     
     name = "single_subject_%s_wf" % subject_id
     
@@ -300,7 +306,8 @@ def init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir):
     if mask_data:
         workflow.connect(mask_vol2surf_lh, 'out_file', datasink, 'data.dset.@lh_fcd_mask')
         workflow.connect(mask_vol2surf_rh, 'out_file', datasink, 'data.dset.@rh_fcd_mask')
- 
+    
+    
     return workflow
 
 

@@ -8,8 +8,7 @@ import sys
 from copy import deepcopy
 import numpy as  np
 from fcdproc.workflow.base import Main_FCD_pipeline
-import warnings
-warnings.filterwarnings("ignore", message="Setting 'extension_initial_dot' will be removed in pybids 0.16.")
+
 
 class PythonLiteralOption(click.Option):
 
@@ -20,10 +19,10 @@ class PythonLiteralOption(click.Option):
             raise click.BadParameter(value)
             
             
-@click.command()
+@click.command(context_settings=dict(help_option_names=['-h', '--help']))
 @click.option('--work_dir', type=click.STRING , help='working directory', required=True)
 @click.option('--analysis_mode', type=click.Choice(['preprocess', 'model', 'detect'], case_sensitive=False))
-@click.option('--participant_label', type=click.STRING, help='subject id to be processed (the sub- prefix can be removed)')
+@click.option('--participant_label', type=click.STRING, default='', help='subject id to be processed (the sub- prefix can be removed)')
 @click.option('--controls', cls=PythonLiteralOption, default=[], help='list of control subject with normal brains')
 @click.option('--pt_positive', cls=PythonLiteralOption, default=[], help='list of patients with known fcd lesions')
 @click.option('--pt_negative', cls=PythonLiteralOption, default=[], help='list of patients with MRI negative fcd lesions')
@@ -32,12 +31,13 @@ class PythonLiteralOption(click.Option):
 @click.option('--fs_license_file', type=click.STRING , help='path to Freesurfer licencse key file')
 @click.option('--output_dir', type=click.STRING , help='output data directory',required=True)
 @click.option('--bids_dir', type=click.STRING , help='input data directory', required=True)
+@click.option('--clean_workdir', is_flag=True, help='Clears working directory of contents to save some space on user OS')
 
-def Create_FCD_Pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant_label, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir):
+def Create_FCD_Pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant_label, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir, clean_workdir):
     """ Create fcd pipeline that can perform single subject processing, modeling and detecting of FCD lesion"""
     
     click.echo(f"performing {analysis_mode} analysis")
     #pylint: disable=too-many-arguments
-    pipeline = Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant_label, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir)
+    pipeline = Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant_label, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir, clean_workdir)
     pipeline.run()
     
