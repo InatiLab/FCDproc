@@ -57,11 +57,9 @@ jobs:
            
     # Step 4. Use PSR to make release
     - name: Python Semantic Release
-      run: |
-          pip install python-semantic-release
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          semantic-release publish
+      uses: relekang/python-semantic-release@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}         
     # Step 6. Publish to PyPI
     - uses: pypa/gh-action-pypi-publish@release/v1
       with: 
@@ -78,3 +76,9 @@ jobs:
     #    user: ${{ secrets.PYPI_USERNAME }}
     #    password: ${{ secrets.PYPI_PASSWORD }}
         
+    #- name: Python Semantic Release
+    #run: |
+    #    pip install python-semantic-release
+    #    git config user.name github-actions
+    #    git config user.email github-actions@github.com
+    #    semantic-release publish
