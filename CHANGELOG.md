@@ -5,7 +5,6 @@
 ## v0.2.1 (2021-12-17)
 ### Fix
 * Added pypi upload on top of semantic release ([`2d80c0e`](https://github.com/InatiLab/fcdproc/commit/2d80c0e9489c8f41e17cf2a80e91732177bb8530))
-
 ## v0.2.0 (2021-12-17)
 ### Feature
 * Let semantic release do the publish ([`f227954`](https://github.com/InatiLab/fcdproc/commit/f22795464f6daae59f01a5cacd339ce4db6cbfdf))
