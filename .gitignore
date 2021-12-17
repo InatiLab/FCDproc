@@ -6,6 +6,9 @@ fcdproc/data/participants.tsv
 fcdproc/data/sub-540/
 fcdproc/data/sub-550/
 fcdproc/data/sub-560/
+fcdproc/data/sub-76/
+fcdproc/data/sub-77/
+fcdproc/data/sub-78/
 fcdproc/data/README
 #python and Ipython Notebooks
 __pycache__
