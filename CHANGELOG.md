@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.1 (2021-12-17)
+### Fix
+* Added space ([`a967ff8`](https://github.com/InatiLab/fcdproc/commit/a967ff883c42d757c64084eed2bec5cd908a0150))
+
 ## v0.3.0 (2021-12-17)
 ### Feature
 * Trying to fix reuse version issue of pypi ([`e2aa3df`](https://github.com/InatiLab/fcdproc/commit/e2aa3df9ccc37af49e3fe026ef1d3d663da5d4d3))
