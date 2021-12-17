@@ -20,7 +20,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'
+        python-version: '3.8'
     - name: install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -45,7 +45,7 @@ jobs:
     # Step 2. Set up Python 3.x
     - uses: actions/setup-python@v2
       with:
-        python-version: '3.x' 
+        python-version: '3.8' 
     # Step 3. Check-out repository so we can access its contents
     - uses: actions/checkout@v2
       with:
