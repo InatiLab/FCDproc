@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.0 (2021-12-17)
+### Feature
+* Let semantic release do the publish ([`f227954`](https://github.com/InatiLab/fcdproc/commit/f22795464f6daae59f01a5cacd339ce4db6cbfdf))
+
 ## v0.1.0 (2021-12-17)
 ### Feature
 * Specified python version ([`935776b`](https://github.com/ShervinAbd92/fcdproc/commit/935776b02ade96d2f43a9d8db336044867f5b8e8))
