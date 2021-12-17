@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.0 (2021-12-17)
+### Feature
+* Trying to fix reuse version issue of pypi ([`e2aa3df`](https://github.com/InatiLab/fcdproc/commit/e2aa3df9ccc37af49e3fe026ef1d3d663da5d4d3))
+
 ## v0.2.1 (2021-12-17)
 ### Fix
 * Added pypi upload on top of semantic release ([`2d80c0e`](https://github.com/InatiLab/fcdproc/commit/2d80c0e9489c8f41e17cf2a80e91732177bb8530))
