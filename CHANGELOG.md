@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.19 (2021-12-15)
+### Fix
+* Added some color option for the print msg ([`08fafbe`](https://github.com/ShervinAbd92/fcdproc/commit/08fafbea31ecb2f464c1230a0b42e95ea62e4a7d))
+
 ## v0.0.16 (2021-12-09)
 ### Fix
 * Changed the detect mode to just detection rather than combination of preprocess and detect ([`514e1d5`](https://github.com/ShervinAbd92/fcdproc/commit/514e1d5dcd0d496f6a9f0faf1d57f7336da83467))
