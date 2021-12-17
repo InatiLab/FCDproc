@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.0 (2021-12-17)
+### Feature
+* Specified python version ([`935776b`](https://github.com/ShervinAbd92/fcdproc/commit/935776b02ade96d2f43a9d8db336044867f5b8e8))
+* Added some documentations ([`3be626c`](https://github.com/ShervinAbd92/fcdproc/commit/3be626c8b1a0385e58d0f95bc8d8fce96437165d))
+* Added some documentations ([`015488d`](https://github.com/ShervinAbd92/fcdproc/commit/015488d0ed409245f5190db77da0ce730de39a95))
+
+### Fix
+* Added automaic push ([`98b23fd`](https://github.com/ShervinAbd92/fcdproc/commit/98b23fd4baa384640ba45763771228d3c03c30d0))
+* Removed the documentation build to test the pypi publish first ([`545b593`](https://github.com/ShervinAbd92/fcdproc/commit/545b5934973ae3e8b83e34cada8776219634eb16))
+* Added some changes to docs configuration ([`a594e95`](https://github.com/ShervinAbd92/fcdproc/commit/a594e95224bfb8fdc9bc4b27eff06fc6130a187d))
+
 ## v0.0.19 (2021-12-15)
 ### Fix
 * Added some color option for the print msg ([`08fafbe`](https://github.com/ShervinAbd92/fcdproc/commit/08fafbea31ecb2f464c1230a0b42e95ea62e4a7d))
