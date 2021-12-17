@@ -36,6 +36,7 @@ class PythonLiteralOption(click.Option):
 def Create_FCD_Pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant_label, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir, clean_workdir):
     """ Create fcd pipeline that can perform single subject processing, modeling and detecting of FCD lesion"""
     
+    
     click.echo(f"performing {analysis_mode} analysis")
     #pylint: disable=too-many-arguments
     pipeline = Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant_label, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir, clean_workdir)
