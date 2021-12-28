@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.4 (2021-12-28)
+### Fix
+* Added documentation build process to ci-ci.yml ([`4bb4515`](https://github.com/InatiLab/fcdproc/commit/4bb4515da692e9d015776416c05f51e6a21e1450))
+
 ## v0.3.3 (2021-12-28)
 ### Fix
 * Added some documentation features ([`47632de`](https://github.com/InatiLab/fcdproc/commit/47632de5456fa0347e6831441cb05600ea6343b5))
