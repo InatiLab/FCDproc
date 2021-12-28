@@ -10,7 +10,7 @@ This application is easily installable, requiring minimal user intervention and 
 .. image:: https://img.shields.io/pypi/v/fcdproc.svg
         :target: https://pypi.python.org/pypi/fcdproc
 
-.. image:: https://inatilab.github.io/fcdproc
+.. image:: https://inatilab.github.io/fcdproc.svg
   :target: https://inatilab.github.io/fcdproc/
   :alt: Documentation Status
 
