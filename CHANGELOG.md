@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.6 (2021-12-28)
+### Fix
+* Adding website files to be hosted ([`4331388`](https://github.com/InatiLab/fcdproc/commit/43313888a4f1c1be9402a772cccf15ab7c174b50))
+
 ## v0.3.5 (2021-12-28)
 ### Fix
 * Modified README.md file ([`3954be8`](https://github.com/InatiLab/fcdproc/commit/3954be8f487abdd7850c9f47c7a3ad5647a3a788))
