@@ -1,0 +1,8 @@
+.. include:: links.rst
+
+===========================
+Processing pipeline details
+===========================
+
+*fcdproc* is comprised of 3 levels: Preprocessing, Modeling, and Detection
+

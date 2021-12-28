@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Processing pipeline details &mdash; fcdproc 0.3.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Outputs" href="outputs.html" />
+    <link rel="prev" title="Usage Notes" href="usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> fcdproc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage Notes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Processing pipeline details</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#preprocessing-of-structural-mri">Preprocessing of structural MRI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#normative-modeling">Normative Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fcd-lesion-detection">FCD Lesion Detection</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fcdproc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Processing pipeline details</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/workflows.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="processing-pipeline-details">
+<h1>Processing pipeline details<a class="headerlink" href="#processing-pipeline-details" title="Permalink to this headline"></a></h1>
+<p><em>fcdproc</em> is comprised of 3 levels: Preprocessing, Modeling, and Detection</p>
+<section id="preprocessing-of-structural-mri">
+<h2>Preprocessing of structural MRI<a class="headerlink" href="#preprocessing-of-structural-mri" title="Permalink to this headline"></a></h2>
+<p>The anatomical sub-workflow expects 3 MRI contrasts as its inputs (T1, T2, and FALIR). then it performs the follwoing steps:</p>
+<ul class="simple">
+<li><p>T1 axialization with respect to TT_N27 template <code class="docutils literal notranslate"><span class="pre">placed</span> <span class="pre">under</span> <span class="pre">$bids_dir/__files/TT_N27.nii</span></code></p></li>
+<li><p>T2 and FLAIR coregistration to T1</p></li>
+<li><p>subject specific intensity normalization</p></li>
+<li><p>feature generation</p></li>
+<li><p>surface reconstruction <strong>(fs-suma)-details in the follwoing section</strong></p></li>
+<li><p>surface feature normalization</p></li>
+</ul>
+<figure class="align-default">
+<img alt="_images/Single_Subject_with_FCD_mask.png" src="_images/Single_Subject_with_FCD_mask.png" />
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>for FCD positive patients who have their fcd_mask dervied from the original input T1, please place them under
+$bids_dir/mask/$subject_id/fcd.msk.nii. The single subject workflow would then coregisters the input T1 to the
+axialized T1, apply the transformation metrix to the fcd.msk.nii to get it in alignment with T1 and then maps
+them from volume domain to surface domain.</p>
+</div>
+<p>The fs-suma workflow perform freesurfer’s reconall to reconstruct the brain surface from T1 and T2 structural images.
+If enabled, several steps in the <em>fcdproc</em> pipeline are added or replaced.
+All surface reconstruction may be disabled with the <code class="docutils literal notranslate"><span class="pre">--fs_no_reconall</span></code> flag.</p>
+<p>In order to bypass reconstruction in <em>fcdproc</em>, place existing reconstructed
+subjects in <code class="docutils literal notranslate"><span class="pre">&lt;output</span> <span class="pre">dir&gt;/freesurfer</span></code> prior to the run, or specify an external
+subjects directory with the <code class="docutils literal notranslate"><span class="pre">--fs_subjects_dir</span></code> flag.
+<em>fcdproc</em> will perform any missing <code class="docutils literal notranslate"><span class="pre">recon-all</span></code> steps, and continue with SUMA to convert
+the cortical surface into AFNI-based fromat.</p>
+<figure class="align-default">
+<img alt="_images/Freesurfer_SUMA_wf.png" src="_images/Freesurfer_SUMA_wf.png" />
+</figure>
+</section>
+<section id="normative-modeling">
+<h2>Normative Modeling<a class="headerlink" href="#normative-modeling" title="Permalink to this headline"></a></h2>
+<p>We perfrom the following steps to train our FCD-detector model:</p>
+<ul class="simple">
+<li><p>dimensionality reduction of the initial feature vectors across HVs to components required to explain 90% of the variance <code class="docutils literal notranslate"><span class="pre">PCA</span></code></p></li>
+<li><p>iterative non-linear gaussianization to obtain a multivariate normal distribution of features <code class="docutils literal notranslate"><span class="pre">GAUSS</span></code></p></li>
+<li><p>surface-based smoothing and averaging of features across HVs at each vertex on the gray-white junction surface <code class="docutils literal notranslate"><span class="pre">control_avg</span></code></p></li>
+<li><p>The same features were computed at each vertex within the training FCD masks in MRI+ patients to generate a normalized average FCD feature vector <code class="docutils literal notranslate"><span class="pre">fcd_detector</span></code></p></li>
+</ul>
+<figure class="align-default">
+<img alt="_images/Modeling.png" src="_images/Modeling.png" />
+</figure>
+</section>
+<section id="fcd-lesion-detection">
+<h2>FCD Lesion Detection<a class="headerlink" href="#fcd-lesion-detection" title="Permalink to this headline"></a></h2>
+<p>At this step, smoothed normalized features at each vertex were projected onto the FCD average unit vector,
+allowing for estimation of similarity to FCDs, then corrected for the expected appearance at each vertex.</p>
+<figure class="align-default">
+<img alt="_images/Detection.png" src="_images/Detection.png" />
+</figure>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage.html" class="btn btn-neutral float-left" title="Usage Notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="outputs.html" class="btn btn-neutral float-right" title="Outputs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, InatiLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

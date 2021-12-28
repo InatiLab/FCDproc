@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usage Notes &mdash; fcdproc 0.3.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Workflows" href="workflows.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> fcdproc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#execution-and-the-bids-format">Execution and the BIDS format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-line-arguments">Command-Line Arguments</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fcdproc">fcdproc</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-freesurfer-license">The FreeSurfer license</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fcdproc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Usage Notes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="usage-notes">
+<span id="usage"></span><h1>Usage Notes<a class="headerlink" href="#usage-notes" title="Permalink to this headline"></a></h1>
+<section id="execution-and-the-bids-format">
+<h2>Execution and the BIDS format<a class="headerlink" href="#execution-and-the-bids-format" title="Permalink to this headline"></a></h2>
+<p>The <em>fcdproc</em> workflow takes as principal input the path of the dataset
+that is to be processed.
+The input dataset is required to be in valid <abbr title="Brain Imaging Data Structure">BIDS</abbr> format, and it must include at least one T1w structural image and
+(unless disabled with a flag) a BOLD series.
+We highly recommend that you validate your dataset with the free, online
+<a class="reference external" href="http://bids-standard.github.io/bids-validator/">BIDS Validator</a>.</p>
+<p>The exact command to run <em>fcdproc</em> depends on the <a class="reference external" href="installation.html">Installation</a> method.
+The common parts of the command follow the <a class="reference external" href="https://github.com/BIDS-Apps">BIDS-Apps</a> definition.
+Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fcdproc</span> <span class="o">--</span><span class="n">work_dir</span> <span class="n">work</span><span class="o">/</span> <span class="o">--</span><span class="n">output_dir</span> <span class="n">out</span><span class="o">/</span> <span class="o">--</span><span class="n">bids_dir</span>  <span class="n">data</span><span class="o">/</span><span class="n">bids_root</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Further information about BIDS and BIDS-Apps can be found at the
+<a class="reference external" href="https://www.nipreps.org/apps/framework/">NiPreps portal</a>.</p>
+</section>
+<section id="command-line-arguments">
+<h2>Command-Line Arguments<a class="headerlink" href="#command-line-arguments" title="Permalink to this headline"></a></h2>
+<section id="fcdproc">
+<h3>fcdproc<a class="headerlink" href="#fcdproc" title="Permalink to this headline"></a></h3>
+<p>Create fcd pipeline that can perform single subject processing, modeling and detecting of FCD lesion</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>fcdproc <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fcdproc-version">
+<span class="sig-name descname"><span class="pre">--version</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-fcdproc-version" title="Permalink to this definition"></a></dt>
+<dd><p>Show the version and exit.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fcdproc-work_dir">
+<span id="cmdoption-fcdproc-work-dir"></span><span class="sig-name descname"><span class="pre">--work_dir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;work_dir&gt;</span></span><a class="headerlink" href="#cmdoption-fcdproc-work_dir" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> working directory</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fcdproc-analysis_mode">
+<span id="cmdoption-fcdproc-analysis-mode"></span><span class="sig-name descname"><span class="pre">--analysis_mode</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;analysis_mode&gt;</span></span><a class="headerlink" href="#cmdoption-fcdproc-analysis_mode" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Options</dt>
+<dd class="field-odd"><p>preprocess | model | detect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fcdproc-participant_label">
+<span id="cmdoption-fcdproc-participant-label"></span><span class="sig-name descname"><span class="pre">--participant_label</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;participant_label&gt;</span></span><a class="headerlink" href="#cmdoption-fcdproc-participant_label" title="Permalink to this definition"></a></dt>
+<dd><p>subject id to be processed (the sub- prefix can be removed)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fcdproc-controls">
+<span class="sig-name descname"><span class="pre">--controls</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;controls&gt;</span></span><a class="headerlink" href="#cmdoption-fcdproc-controls" title="Permalink to this definition"></a></dt>
+<dd><p>list of control subject with normal brains</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fcdproc-pt_positive">
+<span id="cmdoption-fcdproc-pt-positive"></span><span class="sig-name descname"><span class="pre">--pt_positive</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;pt_positive&gt;</span></span><a class="headerlink" href="#cmdoption-fcdproc-pt_positive" title="Permalink to this definition"></a></dt>
+<dd><p>list of patients with known fcd lesions</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fcdproc-pt_negative">
+<span id="cmdoption-fcdproc-pt-negative"></span><span class="sig-name descname"><span class="pre">--pt_negative</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;pt_negative&gt;</span></span><a class="headerlink" href="#cmdoption-fcdproc-pt_negative" title="Permalink to this definition"></a></dt>
+<dd><p>list of patients with MRI negative fcd lesions</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fcdproc-fs_reconall">
+<span id="cmdoption-fcdproc-fs-reconall"></span><span id="cmdoption-fcdproc-fs_no_reconall"></span><span id="cmdoption-fcdproc-fs-no-reconall"></span><span class="sig-name descname"><span class="pre">--fs_reconall</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--fs_no_reconall</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-fcdproc-fs_reconall" title="Permalink to this definition"></a></dt>
+<dd><p>option to run freesurfer reconstruction</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fcdproc-fs_subjects_dir">
+<span id="cmdoption-fcdproc-fs-subjects-dir"></span><span class="sig-name descname"><span class="pre">--fs_subjects_dir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;fs_subjects_dir&gt;</span></span><a class="headerlink" href="#cmdoption-fcdproc-fs_subjects_dir" title="Permalink to this definition"></a></dt>
+<dd><p>path to existing subjects directory to reuse (default: OUTPUT_DIR/freesurfer)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fcdproc-fs_license_file">
+<span id="cmdoption-fcdproc-fs-license-file"></span><span class="sig-name descname"><span class="pre">--fs_license_file</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;fs_license_file&gt;</span></span><a class="headerlink" href="#cmdoption-fcdproc-fs_license_file" title="Permalink to this definition"></a></dt>
+<dd><p>path to Freesurfer licencse key file</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fcdproc-clean_workdir">
+<span id="cmdoption-fcdproc-clean-workdir"></span><span class="sig-name descname"><span class="pre">--clean_workdir</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-fcdproc-clean_workdir" title="Permalink to this definition"></a></dt>
+<dd><p>Clears working directory of contents to save some space on user OS</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fcdproc-output_dir">
+<span id="cmdoption-fcdproc-output-dir"></span><span class="sig-name descname"><span class="pre">--output_dir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output_dir&gt;</span></span><a class="headerlink" href="#cmdoption-fcdproc-output_dir" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> output data directory</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fcdproc-bids_dir">
+<span id="cmdoption-fcdproc-bids-dir"></span><span class="sig-name descname"><span class="pre">--bids_dir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bids_dir&gt;</span></span><a class="headerlink" href="#cmdoption-fcdproc-bids_dir" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> inputs BIDS data directory</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="the-freesurfer-license">
+<span id="fs-license"></span><h2>The FreeSurfer license<a class="headerlink" href="#the-freesurfer-license" title="Permalink to this headline"></a></h2>
+<p><em>fcdproc</em> uses FreeSurfer tools, which require a license to run.</p>
+<p>To obtain a FreeSurfer license, simply register for free at
+<a class="reference external" href="https://surfer.nmr.mgh.harvard.edu/registration.html">https://surfer.nmr.mgh.harvard.edu/registration.html</a>.</p>
+<p>When using manually-prepared environments or singularity, FreeSurfer will search
+for a license key file first using the <code class="docutils literal notranslate"><span class="pre">$FS_LICENSE</span></code> environment variable and then
+in the default path to the license key file (<code class="docutils literal notranslate"><span class="pre">$FREESURFER_HOME/license.txt</span></code>).</p>
+<p id="prev-derivs">Using a previous run of <em>FreeSurfer</em></p>
+<p>Reconstructions for each participant will be checked for completeness, and any missing
+components will be recomputed.
+You can use the <code class="docutils literal notranslate"><span class="pre">--f_subjects_dir</span></code> flag to specify a different location to save
+FreeSurfer outputs.
+If precomputed results are found, they will be reused.</p>
+<p><strong>Support and communication</strong>.
+All bugs, concerns and enhancement requests for this software can be submitted here:
+<a class="reference external" href="https://github.com/InatiLab/fcdproc/issues">https://github.com/InatiLab/fcdproc/issues</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflows.html" class="btn btn-neutral float-right" title="Workflows" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, InatiLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

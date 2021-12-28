@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Outputs of fcdproc &mdash; fcdproc 0.3.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Developers - API" href="api.html" />
+    <link rel="prev" title="Processing pipeline details" href="workflows.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> fcdproc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Processing pipeline details</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Outputs of <em>fcdproc</em></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#layout">Layout</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#preprocessed-data">Preprocessed Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#normative-data-fcd-detector-model">Normative Data &amp; FCD-Detector Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#projections">Projections</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Developers - API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fcdproc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Outputs of <em>fcdproc</em></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/outputs.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="outputs-of-fcdproc">
+<span id="outputs"></span><h1>Outputs of <em>fcdproc</em><a class="headerlink" href="#outputs-of-fcdproc" title="Permalink to this headline"></a></h1>
+<p><em>fcdproc</em> generates 3 classes of outcomes:</p>
+<ol class="arabic simple">
+<li><p>** Derivative (preprocessed data)**</p></li>
+<li><p>** Model &amp; data ** includes PCA, GAUSS, FCD-detector models as well as Average Controls data fro both hemispheres</p></li>
+</ol>
+<p>3. ** Projections ** 8 <abbr title="hypertext markup language">HTML</abbr> reports per MRI(-) subject, indicating
+similarity map on top of inflated pial surface.</p>
+<section id="layout">
+<h2>Layout<a class="headerlink" href="#layout" title="Permalink to this headline"></a></h2>
+<p>Assuming fcdproc is invoked with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fmriprep</span> <span class="o">&lt;</span><span class="n">input_dir</span><span class="o">&gt;/</span> <span class="o">&lt;</span><span class="n">output_dir</span><span class="o">&gt;/</span> <span class="n">participant</span> <span class="n">analysis_type</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="preprocessed-data">
+<h3>Preprocessed Data<a class="headerlink" href="#preprocessed-data" title="Permalink to this headline"></a></h3>
+<p>Preprocessed, or derivative data are written to <code class="docutils literal notranslate"><span class="pre">&lt;output</span> <span class="pre">dir&gt;/fcdproc/&lt;subject_label&gt;/</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">output_dir</span><span class="o">&gt;/</span>
+  <span class="n">fcdproc</span><span class="o">/</span>
+    <span class="o">&lt;</span><span class="n">subject_label</span><span class="o">&gt;/</span>
+      <span class="n">data</span><span class="o">/</span>
+          <span class="n">std</span><span class="mf">.60</span><span class="o">.&lt;</span><span class="n">subject_label</span><span class="o">&gt;</span><span class="n">_both</span><span class="o">.</span><span class="n">spec</span><span class="o">/</span>
+          <span class="n">std</span><span class="mf">.60</span><span class="o">.&lt;</span><span class="n">subject_label</span><span class="o">&gt;</span><span class="n">_</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">spec</span><span class="o">/</span>
+          <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">pial</span><span class="o">.</span><span class="n">gii</span>\
+          <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">white</span><span class="o">.</span><span class="n">gii</span>\
+          <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">sphere</span><span class="o">.</span><span class="n">gii</span>\
+          <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">sphere</span><span class="o">.</span><span class="n">reg</span><span class="o">.</span><span class="n">gii</span>\
+          <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">smoothwm</span><span class="o">.</span><span class="n">gii</span>\
+          <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">inflated</span><span class="o">.</span><span class="n">gii</span>\
+          <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">inf_200</span><span class="o">.</span><span class="n">gii</span>\
+          <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">aparc</span><span class="o">.</span><span class="n">a2009s</span><span class="o">.</span><span class="n">annot</span><span class="o">.</span><span class="n">niml</span><span class="o">.</span><span class="n">dset</span>\
+          <span class="n">SurfVol_Alnd</span><span class="o">+</span><span class="n">orig</span><span class="o">.</span><span class="p">(</span><span class="n">BRIK</span><span class="o">/</span><span class="n">HEAD</span><span class="p">)</span>\
+          <span class="n">T1_axialize</span><span class="o">.</span><span class="n">nii</span><span class="o">.</span><span class="n">gz</span>\
+          <span class="n">dset</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">curve</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">sulc</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">sel_ctx</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">thickness</span><span class="o">.</span><span class="n">fwhm5</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">w</span><span class="o">-</span><span class="n">g</span><span class="o">.</span><span class="n">pct</span><span class="o">.</span><span class="n">fwhm5</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">T1_features</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">T2_features</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">FL_features</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">features</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">globalSTD</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">globalSTD</span><span class="o">.</span><span class="n">PCA</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">globalSTD</span><span class="o">.</span><span class="n">PCA</span><span class="o">.</span><span class="n">GAUSS</span><span class="o">.</span><span class="n">NITER</span><span class="p">{</span><span class="mf">1..10</span><span class="p">}</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">globalSTD</span><span class="o">.</span><span class="n">PCA</span><span class="o">.</span><span class="n">GAUSS</span><span class="o">.</span><span class="n">fwhm10</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+</pre></div>
+</div>
+</section>
+<section id="normative-data-fcd-detector-model">
+<h3>Normative Data &amp; FCD-Detector Model<a class="headerlink" href="#normative-data-fcd-detector-model" title="Permalink to this headline"></a></h3>
+<p>Models and normative data are written to <code class="docutils literal notranslate"><span class="pre">&lt;output</span> <span class="pre">dir&gt;/fcdproc/</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">output_dir</span><span class="o">&gt;/</span>
+  <span class="n">fcdproc</span><span class="o">/</span>
+    <span class="n">data</span><span class="o">/</span>
+      <span class="n">globalSTD</span><span class="o">.</span><span class="n">PCA</span><span class="o">/</span>
+      <span class="n">features</span><span class="o">.</span><span class="n">globalSTD</span><span class="o">.</span><span class="n">PCA</span><span class="o">.</span><span class="n">GAUSS</span><span class="o">.</span><span class="n">NITER</span><span class="p">{</span><span class="mf">1..10</span><span class="p">}</span><span class="o">/</span>
+      <span class="n">lh_avg</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+      <span class="n">rh_avg</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+    <span class="n">model</span><span class="o">/</span>
+      <span class="n">PCA</span><span class="o">.</span><span class="n">globalSTD</span><span class="o">/</span>
+      <span class="n">GAUSS</span><span class="o">.</span><span class="n">NITER</span><span class="p">{</span><span class="mf">1..10</span><span class="p">}</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">globalSTD</span><span class="o">.</span><span class="n">PCA</span>\
+      <span class="n">fcd_detector</span>\
+</pre></div>
+</div>
+</section>
+<section id="projections">
+<h3>Projections<a class="headerlink" href="#projections" title="Permalink to this headline"></a></h3>
+<p>Similarity map of MRI negative patients are written to
+<code class="docutils literal notranslate"><span class="pre">&lt;output</span> <span class="pre">dir&gt;/fcdproc/&lt;subject_label&gt;/data/dset/projections/</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">output_dir</span><span class="o">&gt;/</span>
+  <span class="n">fcdproc</span><span class="o">/</span>
+    <span class="o">&lt;</span><span class="n">subject_label</span><span class="o">&gt;/</span>
+      <span class="n">data</span><span class="o">/</span>
+        <span class="n">dset</span><span class="o">/</span>
+          <span class="n">projections</span><span class="o">/</span>
+            <span class="n">std</span><span class="mf">.60</span><span class="o">.</span><span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="o">.</span><span class="n">fcd_proj_</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span><span class="mf">.1</span><span class="n">D</span><span class="o">.</span><span class="n">dset</span><span class="o">/</span>
+            <span class="p">[</span><span class="n">LR</span><span class="p">]</span><span class="n">_</span><span class="p">[</span><span class="n">inflated</span><span class="o">/</span><span class="n">pial_inflated</span><span class="p">]</span><span class="n">_surf_</span><span class="p">[</span><span class="n">normalized</span><span class="o">/</span><span class="n">unnormalized</span><span class="p">]</span><span class="n">_projection</span><span class="o">.</span><span class="n">html</span><span class="o">/</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="workflows.html" class="btn btn-neutral float-left" title="Processing pipeline details" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="Developers - API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, InatiLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
