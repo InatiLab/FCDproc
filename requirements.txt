@@ -5,7 +5,7 @@ nibabel
 numpy
 scipy
 nipype
-fmriprep
+fmriprep>=20.2.5
 smriprep
 jem
 niworkflows
@@ -18,3 +18,4 @@ pathlib
 gitpython>=3.0.8
 tomlkit==0.7.0
 six>=1.11.0
+

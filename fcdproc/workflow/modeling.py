@@ -77,7 +77,9 @@ def pca_gauss_detector_modeling_wf(*, output_dir, controls, pt_pos, pt_neg, name
     
     template = {'feature': '{subject_id}/data/dset/*features.globalSTD.1D.dset',
                 'selctx' : '{subject_id}/data/dset/*sel_ctx.1D.dset',
-                'specs' : '{subject_id}/data/*_?h.spec'}
+                'specs' : '{subject_id}/data/*_?h.spec',
+                'surface': '{subject_id}/data/std.60.?h.inf*.gii',
+                }
     
     select_feat = pe.MapNode(SelectFiles(template, sort_filelist=True), iterfield=['subject_id'], name='select_features', run_without_submitting=True)
     select_feat.inputs.subject_id = subjects
@@ -151,7 +153,13 @@ def pca_gauss_detector_modeling_wf(*, output_dir, controls, pt_pos, pt_neg, name
     pipeline.connect(control_avg, 'lh_avg', apply_fcd_model, 'lh_avg')
     pipeline.connect(control_avg, 'rh_avg', apply_fcd_model, 'rh_avg')
     
+    #generate html simialarity maps
+    sim_map = pe.Node(FCD_python.generate_similarity_map(), name='similarity_map')
+    sim_map.inputs.subject_list = pt_neg
     
+    pipeline.connect(select_feat, ('surface', flaten_list), sim_map, 'infl_surf')
+    pipeline.connect(apply_fcd_model, 'data', sim_map, 'proj_data') 
+
     #saving the result in the output node
     pipeline.connect(TrainPCA, 'pca', outputnode, 'pca_model')
     pipeline.connect(TrainGauss, 'model_dir', outputnode, 'model_dir')

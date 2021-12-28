@@ -1089,3 +1089,102 @@ class train_FCD_detector2(BaseInterface):
         
        return outputs
 
+
+class generate_similarity_map_InputSpec(BaseInterfaceInputSpec):
+
+    infl_surf = traits.List(desc="list of left and right hemisphere inflated surface (gifti-format)")
+    proj_data = traits.List(desc="list of (un)normalized projectection vectors")
+    subject_list = traits.List(desc='list of patient negatives')
+
+class generate_similarity_map_OutputSpec(TraitedSpec):
+
+    sim_map = traits.List(traits.File(desc='output left/right hemisphere similarity map file in the form of surf_projection_{norm}_{hemi}.html'))
+
+class generate_similarity_map(BaseInterface):    
+    
+    input_spec = generate_similarity_map_InputSpec
+    output_spec = generate_similarity_map_OutputSpec
+    
+    def _run_interface(self, runtime):
+         
+        import os
+        import joblib
+        import numpy as np
+        from nilearn import plotting
+        import matplotlib.pyplot as plt
+        
+        COOL_WARM = plt.cm.get_cmap('coolwarm')
+        surface = self.inputs.infl_surf
+        projection = self.inputs.proj_data
+        subj_list = self.inputs.subject_list
+
+        for subj in subj_list:
+            infl_data=[]
+            infl200_data=[]
+            unnorm_proj=[]
+            norm_proj=[]
+            for item in surface:
+                if subj in item and 'inflated' in item:
+                    infl_data.append(item)
+            for item in surface:
+                if subj in item and 'inf_200' in item:
+                    infl200_data.append(item)
+
+            for proj_file in projection:
+                if subj in proj_file and 'proj_0' in proj_file:               
+                    unnorm_proj.append(proj_file)
+                elif subj in proj_file and 'proj_1' in proj_file:
+                    norm_proj.append(proj_file) 
+
+            path = os.path.dirname(norm_proj[0])
+
+            view = plotting.view_surf(infl_data[0],np.loadtxt(unnorm_proj[0]), cmap=COOL_WARM, bg_map=None, black_bg=True, vmax=3, title='left_inflated_surf_unnormalized_projection')
+            view.save_as_html(path+'/left_inflated_surf_unnormalized_projection.html')
+            view = plotting.view_surf(infl200_data[0], np.loadtxt(unnorm_proj[0]), cmap=COOL_WARM, bg_map=None, black_bg=True, vmax=3, title='left_inflated_Pial_surf_unnormalized_projection') 
+            view.save_as_html(path+'/left_pial_inflated_surf_unnormalized_projection.html')
+            view = plotting.view_surf(infl_data[1],np.loadtxt(unnorm_proj[1]), cmap=COOL_WARM, bg_map=None, black_bg=True, vmax=3, title='right_inflated_surf_unnormalized_projection')
+            view.save_as_html(path+'/right_inflated_surf_unnormalized_projection.html')
+            view = plotting.view_surf(infl200_data[1], np.loadtxt(unnorm_proj[1]), cmap=COOL_WARM, bg_map=None, black_bg=True, vmax=3, title='right_inflated_Pial_surf_unnormalized_projection') 
+            view.save_as_html(path+'/right_pial_inflated_surf_unnormalized_projection.html')
+            view = plotting.view_surf(infl_data[0],np.loadtxt(norm_proj[0]), cmap=COOL_WARM, bg_map=None, black_bg=True, vmax=3, title='left_inflated_surf_normalized_projection')
+            view.save_as_html(path+'/left_inflated_surf_normalized_projection.html')
+            view = plotting.view_surf(infl200_data[0], np.loadtxt(norm_proj[0]), cmap=COOL_WARM, bg_map=None, black_bg=True, vmax=3, title='left_inflated_Pial_surf_normalized_projection') 
+            view.save_as_html(path+'/left_pial_inflated_surf_normalized_projection.html')
+            view = plotting.view_surf(infl_data[1],np.loadtxt(norm_proj[1]), cmap=COOL_WARM, bg_map=None, black_bg=True, vmax=3, title='right_inflated_surf_normalized_projection')
+            view.save_as_html(path+'/right_inflated_surf_normalized_projection.html')
+            view = plotting.view_surf(infl200_data[1], np.loadtxt(norm_proj[1]), cmap=COOL_WARM, bg_map=None, black_bg=True, vmax=3, title='right_inflated_Pial_surf_normalized_projection') 
+            view.save_as_html(path+'/right_pial_inflated_surf_normalized_projection.html')
+
+        return runtime
+
+    def _list_outputs(self):
+
+        import os
+
+        outputs = self._outputs().get()
+        projection = self.inputs.proj_data
+        subj_list = self.inputs.subject_list
+
+        html_list = [] 
+        for subj in subj_list:
+            for proj_file in projection:
+                if subj in proj_file:
+                    subj_path = os.path.dirname(proj_file)
+            i=0
+            surface = ['inflated', 'pial_inflated']
+            norm = ['unnorm', 'norm']
+            hemi = ['lh', 'rh']
+            
+            html_list.append(os.path.join(subj_path+'/'+hemi[i]+'_'+surface[i]+'_surf_'+norm[i]+'_projection.html'))
+            html_list.append(os.path.join(subj_path+'/'+hemi[i]+'_'+surface[i]+'_surf_'+norm[i+1]+'_projection.html'))
+            html_list.append(os.path.join(subj_path+'/'+hemi[i]+'_'+surface[i+1]+'_surf_'+norm[i]+'_projection.html'))
+            html_list.append(os.path.join(subj_path+'/'+hemi[i]+'_'+surface[i+1]+'_surf_'+norm[i+1]+'_projection.html'))
+            html_list.append(os.path.join(subj_path+'/'+hemi[i+1]+'_'+surface[i]+'_surf_'+norm[i]+'_projection.html'))
+            html_list.append(os.path.join(subj_path+'/'+hemi[i+1]+'_'+surface[i]+'_surf_'+norm[i+1]+'_projection.html'))
+            html_list.append(os.path.join(subj_path+'/'+hemi[i+1]+'_'+surface[i+1]+'_surf_'+norm[i]+'_projection.html'))
+            html_list.append(os.path.join(subj_path+'/'+hemi[i+1]+'_'+surface[i+1]+'_surf_'+norm[i+1]+'_projection.html'))
+
+        outputs['sim_map'] = html_list
+
+        return outputs
+            

@@ -53,7 +53,7 @@ setup(
     packages=find_packages(),
     entry_points={
         "console_scripts": [
-            "Create_FCD_Pipeline=fcdproc.cli:Create_FCD_Pipeline"
+            "fcdproc=fcdproc.cli:fcdproc"
         ]
     },
     include_package_data=True,

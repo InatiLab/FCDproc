@@ -122,7 +122,6 @@ def init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir):
     from fcdproc.workflow.anatomical import subject_fs_suma_wf
     from niworkflows.utils.spaces import Reference, SpatialReferences
     from fmriprep.interfaces import SubjectSummary
-    from smriprep.workflows.anatomical import init_anat_preproc_wf
     from niworkflows.utils.misc import fix_multi_T1w_source_name
     from fmriprep.workflows.bold.resampling import init_bold_surf_wf
     import warnings
@@ -377,7 +376,9 @@ def apply_fcd_detector_wf(subject):
  
     data_template = {'feature': '{subject_id}/data/dset/*features.globalSTD.1D.dset',
                     'selctx' : '{subject_id}/data/dset/*sel_ctx.1D.dset',
-                    'specs' : '{subject_id}/data/*_?h.spec' }
+                    'specs' : '{subject_id}/data/*_?h.spec',
+                    'surface': '{subject_id}/data/std.60.?h.inf*.gii',
+                    }
     
     select_model = pe.Node(SelectFiles(model_template, sort_files=True), name='select_models', run_without_submitting=True)
     select_model.inputs.dset = 'globalSTD'
@@ -421,7 +422,13 @@ def apply_fcd_detector_wf(subject):
     pipeline2.connect(select_model, 'detector', apply_fcd_model, 'fcd_detector')
     pipeline2.connect(select_model, 'avg_lh', apply_fcd_model, 'lh_avg')
     pipeline2.connect(select_model, 'avg_rh', apply_fcd_model, 'rh_avg')
-        
+
+    #generate html simialarity maps
+    sim_map = pe.Node(FCD_python.generate_similarity_map(), name='similarity_map')
+    sim_map.inputs.subject_list = subject
+    
+    pipeline2.connect(select_data, ('surface', flaten_list),sim_map, 'infl_surf')
+    pipeline2.connect(apply_fcd_model, 'data', sim_map, 'proj_data') 
 
     return pipeline2
    
