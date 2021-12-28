@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.8 (2021-12-28)
+### Fix
+* Removed README.md file ([`0f20504`](https://github.com/InatiLab/fcdproc/commit/0f20504d9225cc6c8f54a87a17ef52309d7977c2))
+
 ## v0.3.7 (2021-12-28)
 ### Fix
 * Added few options on README.rst ([`7f31df7`](https://github.com/InatiLab/fcdproc/commit/7f31df7ae109760cb588082b185746c7be2b60b8))
