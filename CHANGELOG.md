@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.2 (2021-12-17)
+### Fix
+* Added space ([`957bf4e`](https://github.com/InatiLab/fcdproc/commit/957bf4e9a9f7b52d37fbae5ae075a6ba307af3c8))
+
 ## v0.3.1 (2021-12-17)
 ### Fix
 * Added space ([`a967ff8`](https://github.com/InatiLab/fcdproc/commit/a967ff883c42d757c64084eed2bec5cd908a0150))
