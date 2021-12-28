@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.5 (2021-12-28)
+### Fix
+* Modified README.md file ([`3954be8`](https://github.com/InatiLab/fcdproc/commit/3954be8f487abdd7850c9f47c7a3ad5647a3a788))
+
 ## v0.3.4 (2021-12-28)
 ### Fix
 * Added documentation build process to ci-ci.yml ([`4bb4515`](https://github.com/InatiLab/fcdproc/commit/4bb4515da692e9d015776416c05f51e6a21e1450))
