@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.7 (2021-12-28)
+### Fix
+* Added few options on README.rst ([`7f31df7`](https://github.com/InatiLab/fcdproc/commit/7f31df7ae109760cb588082b185746c7be2b60b8))
+
 ## v0.3.6 (2021-12-28)
 ### Fix
 * Adding website files to be hosted ([`4331388`](https://github.com/InatiLab/fcdproc/commit/43313888a4f1c1be9402a772cccf15ab7c174b50))
