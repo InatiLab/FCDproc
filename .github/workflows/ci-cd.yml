@@ -31,8 +31,8 @@ jobs:
     - name: build a binary wheel & source tarball
       run: |
         python -m build --sdist --wheel --outdir dist/ .
-    #- name: build the documentation
-    #  run: make -C docs html
+    - name: build the documentation
+      run: sphinx-build -b html docs/source/ docs/build/html
   cd:
     #only run this job if the "ci" job passes
     needs: ci
