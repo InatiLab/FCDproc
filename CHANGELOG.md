@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.11 (2021-12-29)
+### Fix
+* Added sphinx-click to the requirment ([`7963f07`](https://github.com/InatiLab/fcdproc/commit/7963f076b14d9551f51443d296231f3506e6112a))
+
 ## v0.3.10 (2021-12-29)
 ### Fix
 * Added extra sphinx extensions ([`29b9e01`](https://github.com/InatiLab/fcdproc/commit/29b9e017cd6f5d970d73401593a18d041b92bd80))
