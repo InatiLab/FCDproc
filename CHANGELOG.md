@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.9 (2021-12-29)
+### Fix
+* Changed sphinx_click ([`f41ea39`](https://github.com/InatiLab/fcdproc/commit/f41ea39b4fb94f9ffe733662cf5a200ac426fb2c))
+* Changed sphinx_click to sphinx-click ([`9e02bc6`](https://github.com/InatiLab/fcdproc/commit/9e02bc626a915b130cbba8efaa2f13c41f3837e5))
+* Changed sphinx_click to sphinx-click ([`e4060c7`](https://github.com/InatiLab/fcdproc/commit/e4060c716eda9a63a5d466b3bc9e465159e65c74))
+
 ## v0.3.8 (2021-12-28)
 ### Fix
 * Removed README.md file ([`0f20504`](https://github.com/InatiLab/fcdproc/commit/0f20504d9225cc6c8f54a87a17ef52309d7977c2))
