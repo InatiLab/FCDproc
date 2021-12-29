@@ -41,7 +41,7 @@ try:
 except ImportError:
     pass
 
-__version__='0.3.9'
+__version__='0.3.10'
 setup(
     name="fcdproc",
     version= __version__,
