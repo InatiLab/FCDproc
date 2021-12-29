@@ -18,4 +18,4 @@ pathlib
 gitpython>=3.0.8
 tomlkit==0.7.0
 six>=1.11.0
-
+sphinx-click
