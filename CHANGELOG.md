@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.0 (2022-01-03)
+### Feature
+* Added some FurtureWarning suppressant ([`042ed9e`](https://github.com/InatiLab/fcdproc/commit/042ed9efd80d3afd148abb068d6e88f181d792c9))
+
 ## v0.3.12 (2021-12-29)
 ### Fix
 * Added the readthedoc image in README.rst ([`03f2c54`](https://github.com/InatiLab/fcdproc/commit/03f2c5479fc62e8f7c62afe4f5b22d2268d1fd54))
