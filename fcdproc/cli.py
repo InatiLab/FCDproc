@@ -9,6 +9,9 @@ from copy import deepcopy
 import numpy as  np
 from fcdproc.workflow.base import Main_FCD_pipeline
 from pkg_resources import get_distribution, DistributionNotFound
+from warnings import simplefilter
+# ignore all future warnings
+simplefilter(action='ignore', category=FutureWarning)
 
 try:
     __version__ = get_distribution("fcdproc").version

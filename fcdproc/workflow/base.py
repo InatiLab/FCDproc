@@ -12,6 +12,9 @@ Created on Mon Jan  6 10:45:22 2021
 import os
 from copy import deepcopy
 from fcdproc.utils.colors import Colors
+from warnings import simplefilter
+# ignore all future warnings
+simplefilter(action='ignore', category=FutureWarning)
 
 
 def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant_label, controls , pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir, clean_workdir):
@@ -124,8 +127,9 @@ def init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir):
     from fmriprep.interfaces import SubjectSummary
     from niworkflows.utils.misc import fix_multi_T1w_source_name
     from fmriprep.workflows.bold.resampling import init_bold_surf_wf
-    import warnings
-    warnings.filterwarnings("ignore", message="Setting 'extension_initial_dot' will be removed in pybids 0.16.")
+    from warnings import simplefilter
+    # ignore all future warnings
+    simplefilter(action='ignore', category=FutureWarning)
     
     name = "single_subject_%s_wf" % subject_id
     
