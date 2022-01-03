@@ -10,6 +10,8 @@ fcdproc/data/sub-76/
 fcdproc/data/sub-77/
 fcdproc/data/sub-78/
 fcdproc/data/README
+.github/workflows/docker.yml
+Dockerfile
 #python and Ipython Notebooks
 __pycache__
 .ipynb_checkpoints
