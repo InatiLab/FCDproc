@@ -40,6 +40,7 @@ step1: preprocess: ::
 the user delete the intermediate results.
 
 step2: Model: ::
+
     fcdproc --analysis_mode 'model' --work_dir <path> --output_dir <path> --bids_dir <path>
             --controls '[01,02,...,30]'  --pt_poitive '[31,32,...,40]' --pt_negative '[41,42,...,45]'
 
@@ -48,6 +49,7 @@ step2: Model: ::
 * If you have included your pt_negative list, at this stage you will be able to see the dection results under <output_dir>/ fcdproc/$subj/data/dset/projections/      
 
 step3: Detect: ::
+
     fcdproc --analysis_mode 'detect' --work_dir <path> --output_dir <path> --bids_dir <path> --pt_negative '[50,51,52]'
 
 * After training your fcd model, whenever you get a new MRI negative patient, you will have to run them through preprocess step1 and then step3
