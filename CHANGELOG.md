@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.1 (2022-03-03)
+### Fix
+* Removed space list from base script ([`bb070f4`](https://github.com/InatiLab/fcdproc/commit/bb070f4c29cccb902ac4a350fadaba573c68797b))
+
 ## v0.4.0 (2022-01-03)
 ### Feature
 * Added some FurtureWarning suppressant ([`042ed9e`](https://github.com/InatiLab/fcdproc/commit/042ed9efd80d3afd148abb068d6e88f181d792c9))
