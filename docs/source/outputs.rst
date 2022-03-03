@@ -8,20 +8,15 @@ Outputs of *fcdproc*
 
 1. ** Derivative (preprocessed data)** 
 
-2. ** Model & data ** includes PCA, GAUSS, FCD-detector models as well as Average Controls data fro both hemispheres 
+2. ** Model & data ** includes PCA, GAUSS, FCD-detector models as well as Average Controls data from both hemispheres 
 
 3. ** Projections ** 8 :abbr:`HTML (hypertext markup language)` reports per MRI(-) subject, indicating 
 similarity map on top of inflated pial surface.
 
-Layout
-------
-Assuming fcdproc is invoked with::
-
-    fmriprep <input_dir>/ <output_dir>/ participant analysis_type [OPTIONS]
 
 Preprocessed Data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Preprocessed, or derivative data are written to ``<output dir>/fcdproc/<subject_label>/`` ::
+Preprocessed and derivative (output) data are written to ``<output dir>/fcdproc/<subject_label>/`` ::
     
     <output_dir>/
       fcdproc/

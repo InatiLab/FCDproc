@@ -8,18 +8,6 @@ How to install fcdproc package:
 * within a `Manually Prepared Environment (Python 3.7+)`_, also known as
   *bare-metal installation*;
 
-Once you have your *bare-metal* environment set-up (first option above),
-the next step is executing the ``fcdproc`` command-line.
-The ``fcdproc`` command-line options are documented in the :ref:`usage`
-section.
-
-The ``fcdproc`` command-line adheres to the `BIDS-Apps recommendations
-for the user interface <usage.html#execution-and-the-bids-format>`__.
-Therefore, the command-line has the following structure:
-::
-
-  $ fcdproc <input_bids_path> <derivatives_path> <analysis_mode> <named_options>
-
 
 Manually Prepared Environment (Python 3.7+)
 ===========================================

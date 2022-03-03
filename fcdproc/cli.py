@@ -18,33 +18,25 @@ try:
 except DistributionNotFound:
      # package is not installed
     pass
-
-class PythonLiteralOption(click.Option):
-
-    def type_cast_value(self, ctx, value):
-        try:
-            return ast.literal_eval(value)
-        except:
-            raise click.BadParameter(value)
             
             
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
 @click.version_option(version=__version__)
-@click.option('--work_dir', type=click.STRING , help='working directory', required=True)
 @click.option('--analysis_mode', type=click.Choice(['preprocess', 'model', 'detect'], case_sensitive=False))
-@click.option('--participant_label', type=click.STRING, default='', help='subject id to be processed (the sub- prefix can be removed)')
-@click.option('--controls', cls=PythonLiteralOption, default=[], help='list of control subject with normal brains')
-@click.option('--pt_positive', cls=PythonLiteralOption, default=[], help='list of patients with known fcd lesions')
-@click.option('--pt_negative', cls=PythonLiteralOption, default=[], help='list of patients with MRI negative fcd lesions')
-@click.option('--fs_reconall/--fs_no_reconall', default=False, help='option to run freesurfer reconstruction')
-@click.option('--fs_subjects_dir', type=click.STRING , is_flag=False, default="freesurfer", help='path to existing subjects directory to reuse (default: OUTPUT_DIR/freesurfer)')
-@click.option('--fs_license_file', type=click.STRING , help='path to Freesurfer licencse key file')
-@click.option('--clean_workdir', is_flag=True, help='Clears working directory of contents to save some space on user OS')
-@click.option('--output_dir', type=click.STRING , help='output data directory',required=True)
-@click.option('--bids_dir', type=click.STRING , help='inputs BIDS data directory',required=True)
+@click.option('--work_dir', type=click.STRING , help='Working directory', required=True)
+@click.option('--output_dir', type=click.STRING , help='Output data directory',required=True)
+@click.option('--bids_dir', type=click.STRING , help='BIDS data directory',required=True)
+@click.option('--participant_label', type=click.STRING, default='', help="Preprocess: Subject id to be processed (the 'sub-' prefix can be removed)")
+@click.option('--fs_reconall/--fs_no_reconall', default=False, help='Preprocess: Option to run freesurfer reconstruction')
+@click.option('--fs_subjects_dir', type=click.STRING , is_flag=False, default="freesurfer", help='Preprocess: Path to existing subject freesurfer directory (default: OUTPUT_DIR/freesurfer)')
+@click.option('--fs_license_file', type=click.STRING , help='Preprocess: Path to freesurfer license key file')
+@click.option('--clean_workdir', is_flag=True, help='Preprocess: Clear working directory of contents to save space on user OS')
+@click.option('--controls', type=click.STRING, default='', help="Model: List of control subject with normal brains; example format: '[1,5]'")
+@click.option('--pt_positive', type=click.STRING, default='', help='Model: List of patients with known FCD lesions')
+@click.option('--pt_negative', type=click.STRING, default='', help="Model/Detect: List of MRI negative patients (default: '[]')")
 
 
-def fcdproc(bids_dir, output_dir, work_dir, analysis_mode, participant_label, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir, clean_workdir):
+def fcdproc(analysis_mode, bids_dir, output_dir, work_dir, participant_label, controls, pt_positive, pt_negative, fs_reconall, fs_license_file, fs_subjects_dir, clean_workdir):
     """ Create fcd pipeline that can perform single subject processing, modeling and detecting of FCD lesion"""
     
     

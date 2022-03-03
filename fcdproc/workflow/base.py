@@ -30,7 +30,7 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant
     import nipype.pipeline.engine as pe
     from niworkflows.interfaces.bids import BIDSFreeSurferDir
     from nipype.interfaces.io import DataFinder
-    from fcdproc.utils.misc import convert_list_2_str
+    from fcdproc.utils.misc import convert_list_2_str, convert_str_2_list
     from fcdproc.workflow.modeling import pca_gauss_detector_modeling_wf
 
     fcdproc_wf = pe.Workflow(name='fcdproc_wf')
@@ -38,6 +38,10 @@ def Main_FCD_pipeline(bids_dir, output_dir, work_dir, analysis_mode, participant
     fcdproc_dir = os.path.join(output_dir+'/fcdproc/')
     if not os.path.exists(fcdproc_dir):
         os.makedirs(fcdproc_dir)
+
+    controls=convert_str_2_list(controls)
+    pt_positive=convert_str_2_list(pt_positive)
+    pt_negative=convert_str_2_list(pt_negative)
 
     fsdir = pe.Node(
         BIDSFreeSurferDir(
