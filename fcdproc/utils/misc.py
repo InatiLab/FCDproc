@@ -47,6 +47,13 @@ def convert_list_2_str(file):
     
     return path
 
+def convert_str_2_list(subj_str):
+    if isinstance(subj_str, str):
+        subj_list=subj_str.strip('[]').split(',')
+
+    return subj_list  
+
+
 def flaten_list(list_files):
             
     return [j for i in list_files for j in i]        

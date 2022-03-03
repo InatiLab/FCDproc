@@ -24,11 +24,6 @@ As part of such efforts, we maintain some
 `tips and guidelines for developers <https://www.nipreps.org/devs/devenv/>`__
 to help minimize your burden if you want to modify the software.
 
-Internal configuration system
------------------------------
-since the working directory can take up to 25GB of your computer space, we added an option that allows 
-the user delete the intermediate result that is being save in there. to enable this feature you should 
-choose --clean_workdir  when running your pipeline
 
 
 
