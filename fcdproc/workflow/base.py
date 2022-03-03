@@ -142,8 +142,6 @@ def init_single_subject_wf(subject_id, bids_dir, output_dir, work_dir):
     subject_data = collect_data(bids_dir, subject_id, bids_validate=True)[0]
     mask_data = os.path.isfile(bids_dir+'/mask/'+subject_id+'/fcd.msk.nii')
     
-
-    spaces = SpatialReferences(['anat', 'fsnative', 'fsaverage'])
     
     workflow = pe.Workflow(name=name)
     fcdproc_dir = os.path.join(output_dir+'/fcdproc/')   

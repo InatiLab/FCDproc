@@ -104,13 +104,13 @@ def flat_and_select(list_files, group):
         for subj in group:
             if subj in feature_list[i]:
                 features.append(feature_list[i])
-                
+    return features               
                 
 def top_dir(path):
     import os
     return os.path.dirname(path)
     
-    return features     
+      
     
     
     
