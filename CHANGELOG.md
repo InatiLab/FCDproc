@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.5 (2022-03-04)
+### Fix
+* Added some more info in usage.rst doc file ([`2c1d4aa`](https://github.com/InatiLab/fcdproc/commit/2c1d4aa75305582478c5bf868f73a3269504d3cf))
+
 ## v0.4.4 (2022-03-04)
 ### Fix
 * Fixed the identation issue in usage3 ([`77d756a`](https://github.com/InatiLab/fcdproc/commit/77d756a34fa943222e2011e25b9f74acc3bc4ce1))
