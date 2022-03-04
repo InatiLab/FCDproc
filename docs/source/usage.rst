@@ -33,24 +33,24 @@ step1: preprocess: ::
     fcdproc --analysis_mode 'preprocess'  --work_dir <path> --output_dir <path> --bids_dir <path> --participant_label {subj_id}
             [--fs_reconall/fs_no_reconall] --fs_subjects_dir  --fs_license_file --clean_workdir
 
-    * In the preprocessing step, you will need to type in subject_id without the 'sub-' prefix for --participant_label option.
-    * If you have pre-run freesurfer, you can choose '--fs_no_reconall' as well as copying the freesurfer results under OUTPUT_DIR/freesurfer/
-    * The fs_license_file is the license.txt file that is saved where you have saved your freesurfer software package.
-    * Since the working directory can take up to 25GB of your computer space, we added --clean_workdir option that allows the user delete the intermediate results.
+* In the preprocessing step, you will need to type in subject_id without the 'sub-' prefix for --participant_label option.
+* If you have pre-run freesurfer, you can choose '--fs_no_reconall' as well as copying the freesurfer results under OUTPUT_DIR/freesurfer/
+* The fs_license_file is the license.txt file that is saved where you have saved your freesurfer software package.
+* Since the working directory can take up to 25GB of your computer space, we added --clean_workdir option that allows the user delete the intermediate results:
 
 step2: Model: ::
     fcdproc --analysis_mode 'model' --work_dir <path> --output_dir <path> --bids_dir <path>
             --controls '[01,02,...,30]'  --pt_poitive '[31,32,...,40]' --pt_negative '[41,42,...,45]'
 
-    * In the modeling step, you will train a PCA reduction, guassianization, and fcd detector model.
-    * By end of this steps, you should be able to see data & model directories created under your <output_dir> path.
-    * If you have included your pt_negative list, at this stage you will be able to see the dection results under <output_dir>/ fcdproc/$subj/data/dset/projections/      
+* In the modeling step, you will train a PCA reduction, guassianization, and fcd detector model.
+* By end of this steps, you should be able to see data & model directories created under your <output_dir> path.
+* If you have included your pt_negative list, at this stage you will be able to see the dection results under <output_dir>/ fcdproc/$subj/data/dset/projections/:     
 
 step3: Detect: ::
     fcdproc --analysis_mode 'detect' --work_dir <path> --output_dir <path> --bids_dir <path> --pt_negative '[50,51,52]'
 
-    * After training your fcd model, whenever you get a new MRI negative patient, you will have to run them through preprocess step1 and then step3
-    * This step will create the brain abnormality projections under <output_dir>/ fcdproc/$subj/data/dset/projections/ 
+* After training your fcd model, whenever you get a new MRI negative patient, you will have to run them through preprocess step1 and then step3
+* This step will create the brain abnormality projections under <output_dir>/ fcdproc/$subj/data/dset/projections/ 
 
 The FreeSurfer license
 ----------------------
