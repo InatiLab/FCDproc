@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.4 (2022-03-04)
+### Fix
+* Fixed the identation issue in usage3 ([`77d756a`](https://github.com/InatiLab/fcdproc/commit/77d756a34fa943222e2011e25b9f74acc3bc4ce1))
+
 ## v0.4.3 (2022-03-04)
 ### Fix
 * Fixed the identation issue in usage2 ([`baa285c`](https://github.com/InatiLab/fcdproc/commit/baa285c062fa3c4dcee7051bb1bdcc6d8058fd06))
