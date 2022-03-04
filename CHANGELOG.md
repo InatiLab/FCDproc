@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.2 (2022-03-04)
+### Fix
+* Fixed the identation issue in usage ([`317f3e7`](https://github.com/InatiLab/fcdproc/commit/317f3e7c6b832ebccff29c8be088bafaf4b78507))
+
 ## v0.4.1 (2022-03-03)
 ### Fix
 * Removed space list from base script ([`bb070f4`](https://github.com/InatiLab/fcdproc/commit/bb070f4c29cccb902ac4a350fadaba573c68797b))
